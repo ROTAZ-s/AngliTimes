@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ПОМЕХИ">
+<meta name="format-detection" content="telephone=no">
+<title>ПОМЕХИ</title>
+<style>
+:root{--bg:#000;--fg:#fff;--neon:#37FF08;--ink:#000;--dim:#8f8f8f;--soft:#cfcfcf;--line:#2b2b2b;--f:Arial,"Helvetica Neue",Helvetica,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font-family:var(--f);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+.wrap{max-width:660px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:max(22px,env(safe-area-inset-top,0px)) max(56px,env(safe-area-inset-bottom,0px))}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--neon);outline-offset:3px}
+a{color:var(--fg)}
+p{margin:0}
+h1,h2,h3{margin:0;font-weight:700;line-height:1;text-wrap:balance}
+h1{font-size:clamp(52px,16vw,96px);letter-spacing:-.04em}
+h2{font-size:clamp(28px,8vw,40px);letter-spacing:-.03em;text-transform:uppercase}
+h3{font-size:17px;letter-spacing:-.01em}
+.lab{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+.neon{color:var(--neon)}
+.dim{color:var(--dim)}
+.soft{color:var(--soft)}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.back{font-size:14px;color:var(--dim);padding:8px 0;margin-bottom:18px;display:inline-block}
+.back:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 18px;border:2px solid var(--fg);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;text-align:center}
+.btn:hover{background:var(--fg);color:var(--ink)}
+.btn.go{background:var(--neon);border-color:var(--neon);color:var(--ink)}
+.btn.go:hover{background:var(--fg);border-color:var(--fg)}
+.btn.thin{border-color:var(--line);color:var(--dim)}
+.btn.thin:hover{background:none;border-color:var(--fg);color:var(--fg)}
+.btn[disabled]{opacity:.3;pointer-events:none}
+.big{display:block;width:100%;border:2px solid var(--neon);padding:18px;margin-top:4px}
+.big b{display:block;font-size:20px;text-transform:uppercase;letter-spacing:-.01em;color:var(--neon)}
+.big span{display:block;font-size:14px;color:var(--soft);margin-top:4px}
+.big:hover{background:var(--neon)}
+.big:hover b,.big:hover span{color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){
+.gl{position:relative;display:inline-block}
+.gl::after{content:attr(data-t);position:absolute;left:0;top:0;color:var(--neon);clip-path:inset(0 0 100% 0);animation:gl 7s infinite steps(1);pointer-events:none}
+@keyframes gl{0%,90%{clip-path:inset(0 0 100% 0);transform:none}91%{clip-path:inset(15% 0 60% 0);transform:translateX(4px)}93%{clip-path:inset(62% 0 10% 0);transform:translateX(-4px)}95%{clip-path:inset(0 0 100% 0)}}
+}
+.hero{display:flex;flex-direction:column;gap:16px;padding-bottom:24px;border-bottom:2px solid var(--line);margin-bottom:8px}
+.pct{font-size:clamp(64px,20vw,120px);font-weight:700;line-height:.85;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.pct small{font-size:.38em;letter-spacing:0}
+.sec{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;width:100%;padding:16px 0;border-bottom:1px solid var(--line)}
+.sec b{display:block;font-size:17px;text-transform:uppercase;letter-spacing:-.01em}
+.sec span{display:block;font-size:14px;color:var(--dim);margin-top:2px}
+.sec:hover b{color:var(--neon)}
+.sec .p{font-size:15px;font-variant-numeric:tabular-nums;text-align:right;min-width:52px}
+.bars{display:flex;gap:3px;align-items:flex-end;justify-content:flex-end;height:18px;margin-bottom:4px}
+.bars i{width:5px;background:var(--line)}
+.bars i.on{background:var(--neon)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.tile{border:2px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:6px}
+.tile b{font-size:15px;text-transform:uppercase;letter-spacing:.01em}
+.tile span{font-size:13.5px;color:var(--dim);line-height:1.4}
+.tile:hover{border-color:var(--fg)}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;border:2px solid var(--line);padding:16px;width:100%}
+.step:hover{border-color:var(--fg)}
+.step .n{font-size:34px;font-weight:700;line-height:.9;color:var(--neon)}
+.step b{display:block;font-size:17px;text-transform:uppercase}
+.step span{display:block;font-size:14px;color:var(--soft);margin-top:3px}
+.step em{display:block;font-style:normal;font-size:12px;color:var(--dim);margin-top:6px;letter-spacing:.06em;text-transform:uppercase}
+.foot{margin-top:40px;font-size:12px;letter-spacing:.3em;color:#555}
+.warn{border-left:3px solid var(--neon);padding:6px 0 6px 12px;font-size:14px;color:var(--soft)}
+.sbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+.sbar .back{margin:0}
+.log{display:flex;flex-direction:column}
+.entry{padding:22px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.meta{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.meta .r{color:var(--fg)}
+.ctx{font-size:15px;color:var(--soft);line-height:1.45}
+.line{font-size:clamp(19px,5.2vw,23px);font-weight:700;line-height:1.5;letter-spacing:-.01em}
+.line .bd{color:var(--neon)}
+.line .g,.noise .g{color:var(--dim);font-weight:400}
+.gapin{font:inherit;font-weight:700;color:var(--neon);background:transparent;border:0;border-bottom:2px solid var(--neon);border-radius:0;padding:0 2px;min-width:5ch;max-width:100%;caret-color:var(--neon)}
+.gapin::placeholder{color:#3d3d3d}
+.wide{width:100%;font-size:19px;padding:8px 2px}
+.dial{display:inline;font:inherit;font-weight:700;color:var(--neon);border-bottom:2px dashed var(--neon);padding:0 2px}
+.dial .k{font-weight:400;font-size:.6em;color:var(--dim);vertical-align:.25em;margin-left:4px}
+.dial.solo{display:inline-block;margin-top:2px}
+.ok{color:var(--neon)}
+.no{color:var(--dim);text-decoration:line-through;font-weight:400}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.go2{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:2px solid var(--fg);padding:9px 14px}
+.go2:hover{background:var(--fg);color:var(--ink)}
+.go2[disabled]{opacity:.3;pointer-events:none}
+.mini{font-size:13px;color:var(--dim);text-decoration:underline;text-underline-offset:3px;padding:9px 4px}
+.hint{font-size:17px;letter-spacing:.06em;color:var(--soft)}
+.noise{font-size:clamp(17px,4.6vw,20px);letter-spacing:.05em;line-height:1.7;word-spacing:.2em}
+.noise .w{color:var(--fg)}
+.res{display:flex;flex-direction:column;gap:5px;font-size:15px;line-height:1.45}
+.res .tr{color:var(--soft)}
+.res .why{color:var(--dim)}
+.res .tag{color:var(--neon);font-weight:700;text-transform:uppercase;font-size:13px;letter-spacing:.06em}
+.cuts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cut{border:2px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:6px}
+.cut:hover{border-color:var(--fg)}
+.cut span{font-size:12.5px;color:var(--soft);line-height:1.3}
+.cut.right{border-color:var(--neon)}
+.cut.off{opacity:.3}
+.cut.pick{border-color:var(--fg)}
+svg.tl{width:100%;height:auto;display:block}
+.tl .trk{stroke:var(--line);stroke-width:1}
+.tl .clip{fill:var(--fg)}
+.tl .ph{stroke:var(--neon);stroke-width:2}
+.tl .phl{fill:var(--neon);font-family:var(--f);font-size:8px;font-weight:700}
+.tl .lbl{fill:var(--dim);font-family:var(--f);font-size:7px}
+.tl .num{fill:var(--ink);font-family:var(--f);font-size:8px;font-weight:700}
+.tl .dot{fill:var(--neon)}
+.sum{padding:26px 0;display:flex;flex-direction:column;gap:14px}
+.noisebox{position:relative;border:2px solid var(--fg);aspect-ratio:3/1;max-width:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+.noisebox canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
+.noisebox b{position:relative;font-size:clamp(28px,9vw,48px);letter-spacing:-.02em;mix-blend-mode:difference}
+.map{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.map i{aspect-ratio:1;background:var(--neon)}
+.map i.n{background:repeating-linear-gradient(45deg,var(--fg) 0 2px,var(--bg) 2px 4px)}
+.card{border-top:1px solid var(--line);padding:16px 0;display:flex;flex-direction:column;gap:6px}
+.card .en{font-size:19px;font-weight:700}
+.card .en[data-hide]{cursor:pointer}
+.card .ru{font-size:15px;color:var(--soft)}
+.card .ex{font-size:14px;color:var(--dim);font-style:italic}
+.form{font-size:15px;font-weight:700;color:var(--neon)}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:5px 12px;font-size:14.5px}
+.kv dt{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding-top:3px}
+.kv dd{margin:0;min-width:0}
+.sw{display:flex;border:2px solid var(--line);align-self:flex-start}
+.sw button{padding:9px 13px;font-size:13px;color:var(--dim)}
+.sw button.on{background:var(--fg);color:var(--ink)}
+.jing{border:2px solid var(--neon);padding:18px;display:flex;flex-direction:column;gap:12px}
+.jl{font-size:16px;line-height:1.7}
+.kw{border-bottom:2px solid var(--neon);cursor:pointer;font-weight:700}
+.kw.open{color:var(--neon)}
+.lv{display:flex;gap:4px}
+.lv i{width:22px;height:6px;background:var(--line)}
+.lv i.on{background:var(--neon)}
+.wf{width:100%;border-collapse:collapse;font-size:15px}
+.wf td{padding:11px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.wf td:first-child{color:var(--dim);font-size:13px;letter-spacing:.06em;white-space:nowrap}
+.wf .w{font-weight:700;font-size:17px}
+.wf .s{color:var(--neon)}
+.timer{font-size:clamp(110px,34vw,190px);font-weight:700;line-height:.85;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.rounds{display:flex;gap:8px}
+.rounds span{font-size:13px;font-weight:700;border:2px solid var(--line);padding:6px 10px;color:var(--dim)}
+.rounds span.on{border-color:var(--neon);color:var(--neon)}
+.rounds span.done{background:var(--fg);border-color:var(--fg);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:14px;border:2px solid var(--line);padding:7px 10px}
+.chip.on{border-color:var(--neon);color:var(--neon)}
+textarea.code{width:100%;min-height:96px;background:transparent;color:var(--fg);border:2px solid var(--line);border-radius:0;padding:10px;font:13px/1.4 var(--f);word-break:break-all;resize:vertical}
+.list{display:flex;flex-direction:column}
+.list > div{padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
+.list b{font-size:15px;text-transform:uppercase}
+.list span{font-size:14.5px;color:var(--soft)}
+.list em{font-style:normal;font-size:12px;color:var(--dim)}
+.src{font-size:13px;line-height:1.8;color:var(--dim);padding-left:18px;margin:0}
+.src a{color:var(--dim)}
+@media (max-width:430px){.grid2,.cuts{grid-template-columns:1fr}.kv{grid-template-columns:1fr}.kv dt{padding-top:6px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+var SECTIONS={
+c:{name:"На связи",sub:"контакты и фразовые глаголы: get in touch, track down, catch up with"},
+n:{name:"Без слов",sub:"жесты, личное пространство, эксперимент: body language, at random"},
+u:{name:"Уверенно",sub:"как держаться и говорить: maintain good posture, assertive"},
+g:{name:"Кто говорит",sub:"стиль разговора и сцепки: interrupt, establish rapport, impart"},
+i:{name:"Идиомы",sub:"7 выражений: on the same wavelength, get a word in edgeways…"},
+t:{name:"Времена",sub:"5 времён из теста: is researching, was observing, has never learnt"}
+};
+var BANK={
+c:"get in touch with · stay in touch with · lose touch with · bump into · track down · keep track of · catch up with · take part · take place · deliver · attempt",
+n:"invade · avoid · difference · consider · separation · random · average · recreate · prove · inspiring · inspired",
+u:"remain in control · maintain · impression · assertive · polite · listener · cracks · away · impediment · aware · interact · engage · irritating · irritated",
+g:"interrupt · talkative · lengthy · complain · complaint · laughter · puzzled · party · raise · stage · heartily · exception · record · rapport · establishing · preserve · maintain · match · placed · private · approach",
+i:"on the same wavelength · get a word in edgeways · get straight to the point · have a quick word with · actions speak louder than words · hear it on the grapevine · think before you speak"
+};
+var CUTS={
+ps:{name:"Present Simple",form:"do / does",lab:"повторяется по жизни"},
+pc:{name:"Present Continuous",form:"am / is / are + -ing",lab:"идёт прямо сейчас"},
+pp:{name:"Present Perfect",form:"have / has + V3",lab:"тянется из прошлого до сейчас"},
+pas:{name:"Past Simple",form:"V2 / did",lab:"точка в прошлом"},
+pac:{name:"Past Continuous",form:"was / were + -ing",lab:"фон в прошлом, на него что-то легло"},
+pap:{name:"Past Perfect",form:"had + V3",lab:"раньше другого прошлого"}
+};
+var ITEMS=[
+{id:"c1",w:"c",t:"type",src:1,bank:"c",q:"The best way to ___ a person who doesn't use social media is to call him.",a:["track down"],h:"track down",ru:"Лучший способ разыскать человека без соцсетей — позвонить ему.",x:"Track down = to find, разыскать."},
+{id:"c2",w:"c",t:"type",src:1,bank:"c",q:"I like to ___ what my friends are doing by using social media.",a:["keep track of"],h:"keep track of",ru:"Мне нравится следить за жизнью друзей через соцсети.",x:"Keep track of = to follow what is happening."},
+{id:"c3",w:"c",t:"type",bank:"c",q:"I need to ___ the dean's office about my timetable.",a:["get in touch with"],h:"get in touch with",ru:"Мне нужно связаться с деканатом насчёт расписания.",x:"Get in touch with = to contact."},
+{id:"c4",w:"c",t:"type",bank:"c",q:"Even after graduation, we ___ each other through a group chat.",a:["stay in touch with","keep in touch with"],h:"stay in touch with",ru:"Даже после выпуска мы на связи друг с другом через общий чат.",x:"Stay in touch with = to maintain a relationship with."},
+{id:"c5",w:"c",t:"type",bank:"c",q:"When she moved to another city, we slowly ___ each other.",a:["lost touch with"],h:"lost touch with",ru:"Когда она переехала в другой город, мы постепенно потеряли связь.",x:"Lose touch with = to have no contact with; прошлое — lost."},
+{id:"c6",w:"c",t:"type",bank:"c",q:"I ___ my old teacher at the cinema yesterday.",a:["bumped into","ran into"],h:"bumped into",ru:"Вчера в кино я случайно встретила свою старую учительницу.",x:"Bump into = to meet by accident; прошлое — bumped."},
+{id:"c7",w:"c",t:"type",bank:"c",q:"Let's meet for coffee and ___ each other — I want to hear everything!",a:["catch up with"],h:"catch up with",ru:"Давай встретимся на кофе и расскажем друг другу новости — хочу знать всё!",x:"Catch up with = to exchange the latest news."},
+{id:"c8",w:"c",t:"type",bank:"c",q:"It's important to ___ actively in a seminar, not just sit in silence.",a:["take part","participate"],h:"take part",ru:"Важно активно участвовать в семинаре, а не просто молчать.",x:"Take part / participate actively in a seminar."},
+{id:"c9",w:"c",t:"type",bank:"c",q:"The media festival will ___ in the main hall on Friday.",a:["take place"],h:"take place",ru:"Медиафестиваль пройдёт в главном зале в пятницу.",x:"Take place — состояться, проходить."},
+{id:"c10",w:"c",t:"type",bank:"c",q:"The courier ___ my new microphone two hours late.",a:["delivered"],h:"delivered",ru:"Курьер доставил мой новый микрофон с опозданием на два часа.",x:"Deliver — доставлять; delivery — доставка."},
+{id:"c11",w:"c",t:"type",bank:"c",q:"She ___ to call him three times, but he didn't answer.",a:["attempted","tried"],h:"attempted",ru:"Она трижды пыталась ему дозвониться, но он не ответил.",x:"Attempt to do — пытаться; an attempt — попытка."},
+{id:"c12",w:"c",t:"mc",q:"A recent ___ shows that students check their phones over 80 times a day.",o:["survey","surface","service"],a:"survey",ru:"Недавний опрос показывает, что студенты проверяют телефон больше 80 раз в день.",x:"Research / study / survey — исследование."},
+{id:"c13",w:"c",t:"mc",src:1,q:"The internet has ___ communication.",o:["improved","proved","approved"],a:"improved",ru:"Интернет улучшил общение.",x:"Improve — улучшать; prove — доказывать."},
+{id:"c14",w:"c",t:"mc",src:1,q:"There are some negative aspects of the internet in relation ___ communication.",o:["to","with","for"],a:"to",ru:"У интернета есть минусы применительно к общению.",x:"In relation to — применительно к."},
+{id:"c15",w:"c",t:"mc",q:"Как сказать «выступить с презентацией»?",o:["make a presentation","say a presentation","tell a presentation"],a:"make a presentation",ru:"Make a presentation / a speech.",x:"С presentation и speech — make."},
+{id:"c16",w:"c",t:"mc",q:"Как сказать «поговорить с кем-то лично»?",o:["speak to someone face to face","speak to someone eye to eye","speak to someone hand to hand"],a:"speak to someone face to face",ru:"Speak to someone face to face — лицом к лицу.",x:"Face to face — лично."},
+{id:"c17",w:"c",t:"mc",q:"Что значит send a greeting card?",o:["отправить поздравительную открытку","отправить деловое письмо","отправить голосовое"],a:"отправить поздравительную открытку",ru:"Greeting card — открытка.",x:"Greeting — приветствие, поздравление."},
+{id:"c18",w:"c",t:"mc",src:1,q:"These days it's much easier to ___ in touch with old friends, thanks to the internet.",o:["establish","stay","lose","maintain"],a:"stay",ru:"Сегодня благодаря интернету гораздо проще оставаться на связи со старыми друзьями.",x:"Stay in touch; maintain in touch не говорят."},
+{id:"c19",w:"c",t:"mc",src:1,q:"Yesterday I ___ into an old friend I hadn't seen for years.",o:["imparted","met","bumped","caught"],a:"bumped",ru:"Вчера я случайно встретила старого друга, которого не видела много лет.",x:"Bump into; met into не бывает."},
+{id:"c20",w:"c",t:"mc",src:1,q:"When the old man died, it was difficult to ___ down the relatives who should inherit his house.",o:["track","mark","keep","touch"],a:"track",ru:"Когда старик умер, было трудно разыскать родственников-наследников.",x:"Track down — разыскать."},
+{id:"c21",w:"c",t:"mc",src:1,q:"I enjoy ___ up with my friends at the weekends. I love hearing what they've been doing.",o:["keeping","getting","catching","tracking"],a:"catching",ru:"Люблю по выходным болтать с друзьями и узнавать, как прошла их неделя.",x:"Catch up with — обменяться новостями."},
+{id:"c22",w:"c",t:"type",src:1,ctx:"Ellen can't speak at Mr Jones's conference.",q:"I am afraid that I am ___ to attend as I have a prior engagement in America that week.",a:["unable"],h:"unable",ru:"Боюсь, я не смогу присутствовать: на той неделе у меня уже запланирована поездка в Америку.",x:"Be unable to — не иметь возможности."},
+{id:"c23",w:"c",t:"type",src:1,q:"Please find ___ her CV and email contact address.",a:["attached","enclosed"],h:"attached",ru:"Во вложении её резюме и адрес почты.",x:"Please find attached — во вложении."},
+{id:"c24",w:"c",t:"type",src:1,q:"Once again, I would like to ___ for not being able to accept your invitation.",a:["apologise","apologize"],h:"apologise",ru:"Ещё раз прошу прощения, что не могу принять приглашение.",x:"Apologise for + -ing."},
+{id:"c25",w:"c",t:"type",src:1,q:"Should you have any problem contacting Sally, please do not ___ to contact me again.",a:["hesitate"],h:"hesitate",ru:"Если не получится связаться с Салли, без колебаний пишите мне снова.",x:"Please do not hesitate to — не стесняйтесь."},
+{id:"c26",w:"c",t:"type",src:1,ctx:"The letter starts with «Dear Mr Jones».",q:"Yours ___, Ellen Matthews",a:["sincerely"],h:"sincerely",ru:"С уважением, Эллен Мэттьюз.",x:"Имя адресата известно → sincerely; Dear Sir or Madam → faithfully."},
+{id:"c27",w:"c",t:"build",q:"Я потеряла связь со школьными друзьями.",a:"I have lost touch with my school friends.",alt:["I've lost touch with my school friends.","I lost touch with my school friends."],ru:"Я потеряла связь со школьными друзьями.",x:"Lose touch with."},
+{id:"c28",w:"c",t:"build",q:"Давай встретимся и обменяемся новостями.",a:"Let's meet and catch up.",alt:["Let's meet up and catch up.","Let's meet and catch up with each other."],ru:"Давай встретимся и обменяемся новостями.",x:"Catch up — обменяться новостями."},
+{id:"n1",w:"n",t:"type",src:1,say:1,q:"Communication through posture, movements and facial expressions rather than words.",a:["body language"],h:"body language",ru:"Общение позой, движениями и мимикой → язык тела.",x:"b___ l___ — body language."},
+{id:"n2",w:"n",t:"type",src:1,say:1,q:"Looking directly into another person's eyes while talking.",a:["eye contact"],h:"eye contact",ru:"Смотреть собеседнику в глаза → зрительный контакт.",x:"e___ c___ — eye contact."},
+{id:"n3",w:"n",t:"type",src:1,say:1,q:"The area around you that you don't want strangers to enter.",a:["personal space"],h:"personal space",ru:"Зона вокруг тебя, куда не хочется пускать чужих → личное пространство.",x:"p___ s___ — personal space."},
+{id:"n4",w:"n",t:"type",src:1,say:1,q:"To bend your head or body forward to greet someone or show respect.",a:["bow"],h:"bow",ru:"Наклонить голову или корпус в знак приветствия → поклониться.",x:"b___ — bow."},
+{id:"n5",w:"n",t:"type",src:1,say:1,q:"To move your hand from side to side to say hello or goodbye.",a:["wave"],h:"wave",ru:"Двигать рукой туда-сюда, здороваясь или прощаясь → помахать.",x:"w___ — wave."},
+{id:"n6",w:"n",t:"type",src:1,say:1,q:"To take someone's hand and move it up and down when you meet.",a:["shake hands"],h:"shake hands",ru:"Взять руку человека и пожать при встрече → пожать руки.",x:"s___ h___ — shake hands."},
+{id:"n7",w:"n",t:"type",src:1,say:1,q:"Complete absence of sound or speech.",a:["silence"],h:"silence",ru:"Полное отсутствие звука → тишина.",x:"s___ — silence."},
+{id:"n8",w:"n",t:"type",src:1,say:1,q:"A person who studies how people behave in groups and in society.",a:["sociologist"],h:"sociologist",ru:"Человек, который изучает поведение людей в обществе → социолог.",x:"s___ — sociologist."},
+{id:"n9",w:"n",t:"type",bank:"n",q:"Standing too close to a stranger means you ___ their personal space.",a:["invade"],h:"invade",ru:"Встать слишком близко к незнакомцу — значит вторгнуться в его личное пространство.",x:"Invade one's personal space."},
+{id:"n10",w:"n",t:"type",src:1,bank:"n",q:"In some cultures it's better to ___ some gestures, as they can offend people.",a:["avoid"],h:"avoid",ru:"В некоторых культурах лучше избегать определённых жестов — они могут обидеть.",x:"Avoid some gestures."},
+{id:"n11",w:"n",t:"type",src:1,bank:"n",q:"Age and gender make a ___.",a:["difference"],h:"difference",ru:"Возраст и пол имеют значение.",x:"Make a difference — иметь значение."},
+{id:"n12",w:"n",t:"type",src:1,bank:"n",q:"There is a list of the most important things to ___ when communicating with different people.",a:["consider"],h:"consider",ru:"Есть список самых важных вещей, которые стоит учитывать в общении с разными людьми.",x:"Consider — учитывать."},
+{id:"n13",w:"n",t:"type",src:1,bank:"n",q:"The theory says there are only six degrees of ___ between any two people.",a:["separation"],h:"separation",ru:"Теория гласит, что любых двух людей разделяет всего шесть рукопожатий.",x:"Separate → separation."},
+{id:"n14",w:"n",t:"mc",src:1,q:"Teenagers are easily influenced ___ their friends.",o:["by","on","from"],a:"by",ru:"На подростков легко влияют друзья.",x:"Be influenced by."},
+{id:"n15",w:"n",t:"mc",src:1,q:"Bloggers have a strong influence ___ teenagers.",o:["on","to","at"],a:"on",ru:"Блогеры сильно влияют на подростков.",x:"Have an influence on."},
+{id:"n16",w:"n",t:"mc",src:1,q:"She is one of the most ___ people in the media industry.",o:["influential","influenced","influence"],a:"influential",ru:"Она одна из самых влиятельных людей в медиа.",x:"Influential — влиятельный."},
+{id:"n17",w:"n",t:"type",src:1,bank:"n",q:"The sociologist chose a sample of people at ___ for the experiment.",a:["random"],h:"random",ru:"Социолог выбрал группу людей для эксперимента наугад.",x:"Choose at random — выбрать наугад."},
+{id:"n18",w:"n",t:"type",src:1,bank:"n",q:"The experiment involves 10 participants whose ___ age is 18 years old.",a:["average"],h:"average",ru:"В эксперименте 10 участников, их средний возраст — 18 лет.",x:"Average age — средний возраст."},
+{id:"n19",w:"n",t:"type",src:1,bank:"n",q:"The researchers decided to ___ the experiment on the internet.",a:["recreate","replicate"],h:"recreate",ru:"Исследователи решили воссоздать эксперимент в интернете.",x:"Recreate the experiment on the internet."},
+{id:"n20",w:"n",t:"type",src:1,bank:"n",q:"Scientists want to ___ the theory with a new experiment.",a:["prove"],h:"prove",ru:"Учёные хотят доказать теорию новым экспериментом.",x:"Prove the theory — доказать теорию."},
+{id:"n21",w:"n",t:"mc",src:1,q:"Don't judge people by their ___.",o:["appearance","appear","appearing"],a:"appearance",ru:"Не суди людей по внешности.",x:"Appear → appearance; judge by appearance."},
+{id:"n22",w:"n",t:"mc",src:1,q:"I ___ why she never answers my messages.",o:["wonder","wander","wondering"],a:"wonder",ru:"Интересно, почему она никогда не отвечает на мои сообщения.",x:"Wonder — задаваться вопросом; wander — бродить."},
+{id:"n23",w:"n",t:"type",src:1,bank:"n",q:"Her speech was so ___ that I wrote my own script that night. (INSPIRE)",a:["inspiring"],h:"inspiring",ru:"Её речь так вдохновляла, что в ту же ночь я написала свой сценарий.",x:"-ing — о том, что вдохновляет."},
+{id:"n24",w:"n",t:"type",src:1,bank:"n",q:"I felt really ___ after the masterclass. (INSPIRE)",a:["inspired"],h:"inspired",ru:"После мастер-класса я была очень вдохновлена.",x:"-ed — о том, кого вдохновили."},
+{id:"n25",w:"n",t:"mc",src:1,q:"The video was made for a ___ audience of students aged 17–20.",o:["target","goal","aim"],a:"target",ru:"Видео сделано для целевой аудитории студентов 17–20 лет.",x:"Target audience — целевая аудитория."},
+{id:"n26",w:"n",t:"mc",src:1,ctx:"Saying the wrong thing in the wrong way can upset people, and they may stop trusting and respecting you.",q:"You can lose people's respect if you communicate poorly.",o:["верно по тексту","не следует из текста"],a:"верно по тексту",ru:"Если плохо общаться, можно потерять уважение людей.",x:"Stop respecting = lose respect."},
+{id:"n27",w:"n",t:"mc",src:1,ctx:"When people's feelings are hurt, they respond negatively.",q:"People can react in a bad way if a message is communicated ineffectively.",o:["верно по тексту","не следует из текста"],a:"верно по тексту",ru:"Люди могут плохо отреагировать, если сообщение подано неудачно.",x:"Respond negatively = react in a bad way."},
+{id:"n28",w:"n",t:"mc",src:1,ctx:"Poor communication can lead to disastrous results both at work and in the home.",q:"Bad communication is most commonly seen at work.",o:["верно по тексту","не следует из текста"],a:"не следует из текста",ru:"Плохое общение чаще всего встречается на работе.",x:"В тексте: и на работе, и дома. Где чаще — не сказано."},
+{id:"n29",w:"n",t:"mc",src:1,ctx:"Listening is one area of communication in which most people fail.",q:"Many people are unable to listen effectively.",o:["верно по тексту","не следует из текста"],a:"верно по тексту",ru:"Многие не умеют по-настоящему слушать.",x:"Most people fail = many are unable."},
+{id:"n30",w:"n",t:"mc",src:1,ctx:"First of all, try to see the discussion from the other person's perspective.",q:"You should make sure people understand your point of view.",o:["верно по тексту","не следует из текста"],a:"не следует из текста",ru:"Нужно убедиться, что люди понимают твою точку зрения.",x:"Наоборот: понять точку зрения другого."},
+{id:"n31",w:"n",t:"mc",src:1,ctx:"Many of us are too quick to interrupt the speaker.",q:"You should interrupt quickly and politely during a discussion.",o:["верно по тексту","не следует из текста"],a:"не следует из текста",ru:"В разговоре нужно перебивать быстро и вежливо.",x:"Too quick to interrupt — ошибка, а не совет."},
+{id:"n32",w:"n",t:"mc",src:1,ctx:"While you are listening, look at the other person and notice their non-verbal behaviour.",q:"Use gestures to make your meaning clearer.",o:["верно по тексту","не следует из текста"],a:"не следует из текста",ru:"Используй жесты, чтобы яснее выразить мысль.",x:"Жесты надо замечать у собеседника, а не делать самой."},
+{id:"n33",w:"n",t:"mc",src:1,ctx:"While you are listening, look at the other person and notice their non-verbal behaviour.",q:"You should observe how the other people react non-verbally.",o:["верно по тексту","не следует из текста"],a:"верно по тексту",ru:"Нужно наблюдать, как собеседник реагирует без слов.",x:"Notice non-verbal behaviour = observe."},
+{id:"n34",w:"n",t:"mc",src:1,ctx:"The way people sit, stand and move can show that they are uncomfortable or not telling the truth.",q:"It's possible to recognise if someone is lying by watching the way they act.",o:["верно по тексту","не следует из текста"],a:"верно по тексту",ru:"По поведению можно понять, что человек врёт.",x:"Not telling the truth = lying."},
+{id:"n35",w:"n",t:"mc",src:1,ctx:"Appreciating that someone is giving you their time and attention is extremely important.",q:"Other people's opinions are formed by the way you speak to them.",o:["верно по тексту","не следует из текста"],a:"не следует из текста",ru:"Мнение людей складывается из того, как ты с ними говоришь.",x:"Про формирование мнений в тексте ничего нет."},
+{id:"n36",w:"n",t:"build",q:"Не суди по внешности.",a:"Don't judge by appearance.",alt:["Do not judge by appearance.","Don't judge people by appearance.","Don't judge people by their appearance."],ru:"Не суди по внешности.",x:"Judge by appearance."},
+{id:"n37",w:"n",t:"build",q:"Зрительный контакт очень важен.",a:"Eye contact is very important.",ru:"Зрительный контакт очень важен.",x:"Eye contact — без артикля."},
+{id:"u1",w:"u",t:"type",src:1,bank:"u",q:"During a debate, try to ___ of your emotions and voice.",a:["remain in control","stay in control"],h:"remain in control",ru:"Во время дебатов старайся держать под контролем эмоции и голос.",x:"Remain in control of emotions and voice."},
+{id:"u2",w:"u",t:"type",src:1,bank:"u",q:"Stand straight and ___ good posture.",a:["maintain","keep"],h:"maintain",ru:"Стой прямо и держи осанку.",x:"Maintain good posture."},
+{id:"u3",w:"u",t:"type",src:1,bank:"u",q:"Smile and look people in the eye to make a good first ___.",a:["impression"],h:"impression",ru:"Улыбайся и смотри в глаза, чтобы произвести хорошее первое впечатление.",x:"Make a good first impression."},
+{id:"u4",w:"u",t:"type",src:1,bank:"u",q:"Communicate in an ___, not an aggressive style.",a:["assertive"],h:"assertive",ru:"Общайся уверенно, но не агрессивно.",x:"Assertive — уверенный и твёрдый без агрессии."},
+{id:"u5",w:"u",t:"type",src:1,bank:"u",q:"Even when people are rude, try to stay calm and ___.",a:["polite"],h:"polite",ru:"Даже если грубят, старайся оставаться спокойной и вежливой.",x:"Stay calm and polite."},
+{id:"u6",w:"u",t:"type",src:1,bank:"u",q:"A good host is also a good ___.",a:["listener"],h:"listener",ru:"Хороший ведущий — это ещё и хороший слушатель.",x:"Be a good listener."},
+{id:"u7",w:"u",t:"type",src:1,bank:"u",q:"My voice ___ under pressure, so I practise before every speech.",a:["cracks"],h:"cracks",ru:"Под давлением у меня срывается голос, поэтому я репетирую каждую речь.",x:"Voice cracks under pressure; my voice → -s."},
+{id:"u8",w:"u",t:"type",src:1,bank:"u",q:"Your hands can give ___ your emotions, so keep them still.",a:["away"],h:"away",ru:"Руки могут выдать твои эмоции, так что держи их спокойно.",x:"Give away emotions — выдать эмоции."},
+{id:"u9",w:"u",t:"type",src:1,bank:"u",q:"A speech ___ doesn't stop him from being a great speaker.",a:["impediment"],h:"impediment",ru:"Дефект речи не мешает ему быть отличным оратором.",x:"Speech impediment — дефект речи."},
+{id:"u10",w:"u",t:"type",src:1,bank:"u",q:"Be ___ of cultural differences when you talk to foreign guests.",a:["aware"],h:"aware",ru:"Учитывай культурные различия, когда говоришь с иностранными гостями.",x:"Be aware of — осознавать."},
+{id:"u11",w:"u",t:"type",src:1,bank:"u",q:"To ___ successfully with clients, you need to listen to them.",a:["interact"],h:"interact",ru:"Чтобы успешно взаимодействовать с клиентами, нужно их слушать.",x:"Interact successfully with smb."},
+{id:"u12",w:"u",t:"type",src:1,bank:"u",q:"Good speakers ___ people with interest and excitement.",a:["engage"],h:"engage",ru:"Хорошие спикеры увлекают людей интересом и азартом.",x:"Engage people — вовлекать."},
+{id:"u13",w:"u",t:"type",src:1,bank:"u",q:"His constant jokes during the lecture were really ___. (IRRITATE)",a:["irritating"],h:"irritating",ru:"Его бесконечные шутки на лекции реально раздражали.",x:"-ing — то, что раздражает."},
+{id:"u14",w:"u",t:"type",src:1,bank:"u",q:"I felt ___ when the bus was late again. (IRRITATE)",a:["irritated"],h:"irritated",ru:"Я разозлилась, когда автобус снова опоздал.",x:"-ed — человек раздражён."},
+{id:"u15",w:"u",t:"type",src:1,q:"Shyness is the main reason ___ her silence at seminars.",a:["for"],h:"for",ru:"Застенчивость — главная причина её молчания на семинарах.",x:"The main reason for smth."},
+{id:"u16",w:"u",t:"type",src:1,q:"She made an effort ___ remember everyone's name.",a:["to"],h:"to",ru:"Она постаралась запомнить имена всех.",x:"Make an effort to do smth."},
+{id:"u17",w:"u",t:"type",src:1,q:"He has a lack of confidence ___ himself.",a:["in"],h:"in",ru:"Ему не хватает уверенности в себе.",x:"A lack of confidence in."},
+{id:"u18",w:"u",t:"type",src:1,q:"Before the speech, consider your potential ___ — who will be in the room?",a:["listeners","audience"],h:"listeners",ru:"Перед речью подумай о будущих слушателях — кто будет в зале?",x:"Consider potential listeners."},
+{id:"u19",w:"u",t:"mc",src:1,q:"She can speak ___ in front of a big audience.",o:["confidently","confident","confidence"],a:"confidently",ru:"Она умеет уверенно говорить перед большой аудиторией.",x:"После глагола — наречие на -ly."},
+{id:"u20",w:"u",t:"mc",src:1,q:"She looks ___ on camera.",o:["confident","confidently","confidence"],a:"confident",ru:"В кадре она выглядит уверенно.",x:"Look + прилагательное."},
+{id:"u21",w:"u",t:"mc",src:1,q:"The way we communicate is changing ___.",o:["rapidly","rapid","rapidity"],a:"rapidly",ru:"То, как мы общаемся, быстро меняется.",x:"Change rapidly / dramatically / constantly / frequently."},
+{id:"u22",w:"u",t:"mc",src:1,q:"Misunderstandings occur ___ in online chats.",o:["frequently","frequent","frequency"],a:"frequently",ru:"В онлайн-чатах часто случаются недопонимания.",x:"Occur frequently."},
+{id:"u23",w:"u",t:"mc",src:1,q:"The number of social media users has increased ___ over the last ten years.",o:["dramatically","dramatic","drama"],a:"dramatically",ru:"За десять лет число пользователей соцсетей резко выросло.",x:"Increase dramatically / rapidly / constantly."},
+{id:"u24",w:"u",t:"mc",src:1,q:"People behave ___ in a group and alone.",o:["differently","different","difference"],a:"differently",ru:"В группе и наедине люди ведут себя по-разному.",x:"Behave differently."},
+{id:"u25",w:"u",t:"mc",q:"Чем impress отличается от impression?",o:["impress — глагол «впечатлить», impression — «впечатление»","impress — «впечатление», impression — глагол","ничем"],a:"impress — глагол «впечатлить», impression — «впечатление»",ru:"Impress the audience — впечатлить зал; make an impression — произвести впечатление.",x:"-ion делает существительное."},
+{id:"u26",w:"u",t:"build",q:"Будь собой.",a:"Be yourself.",ru:"Будь собой.",x:"Be yourself."},
+{id:"u27",w:"u",t:"build",q:"Я стараюсь сохранять спокойствие.",a:"I try to stay calm.",alt:["I'm trying to stay calm.","I am trying to stay calm.","I try to remain calm."],ru:"Я стараюсь сохранять спокойствие.",x:"Stay calm."},
+{id:"u28",w:"u",t:"build",q:"Очень важно произвести хорошее первое впечатление.",a:"It is very important to make a good first impression.",alt:["It's very important to make a good first impression.","Making a good first impression is very important."],ru:"Очень важно произвести хорошее первое впечатление.",x:"Make a good first impression."},
+{id:"g1",w:"g",t:"type",src:1,q:"Men and women communicate ___. (DIFFERENT)",a:["differently"],h:"differently",ru:"Мужчины и женщины общаются по-разному.",x:"После глагола — наречие на -ly."},
+{id:"g2",w:"g",t:"type",src:1,q:"Age, gender and culture are the factors that can influence a ___ style. (CONVERSATION)",a:["conversational"],h:"conversational",ru:"Возраст, пол и культура влияют на манеру разговора.",x:"Conversation → conversational."},
+{id:"g3",w:"g",t:"type",src:1,bank:"g",q:"It's rude to ___ people when they are speaking.",a:["interrupt"],h:"interrupt",ru:"Невежливо перебивать людей, когда они говорят.",x:"Interrupt — перебивать."},
+{id:"g4",w:"g",t:"type",src:1,q:"People who live in ___ areas often travel to the city centre for work. (SUBURB)",a:["suburban"],h:"suburban",ru:"Жители пригородов часто ездят на работу в центр.",x:"Suburb → suburban."},
+{id:"g5",w:"g",t:"type",src:1,bank:"g",q:"My little sister is particularly ___ in the morning — she never stops chatting.",a:["talkative"],h:"talkative",ru:"Моя младшая сестра особенно болтлива по утрам.",x:"Be particularly talkative."},
+{id:"g6",w:"g",t:"type",src:1,bank:"g",q:"His speech was full of ___ comments and explanations.",a:["lengthy"],h:"lengthy",ru:"Его речь была полна затянутых комментариев и объяснений.",x:"Length → lengthy — затянутый."},
+{id:"g7",w:"g",t:"type",src:1,bank:"g",q:"Our neighbours often ___ about the noise.",a:["complain"],h:"complain",ru:"Соседи часто жалуются на шум.",x:"Complain about smth."},
+{id:"g8",w:"g",t:"type",src:1,bank:"g",q:"We received a ___ about the sound quality of the video.",a:["complaint"],h:"complaint",ru:"Нам пришла жалоба на качество звука в видео.",x:"Complain → complaint."},
+{id:"g9",w:"g",t:"type",src:1,bank:"g",q:"When he told the joke, everyone burst into ___.",a:["laughter"],h:"laughter",ru:"Когда он пошутил, все расхохотались.",x:"Burst into laughter."},
+{id:"g10",w:"g",t:"type",src:1,bank:"g",q:"She looked ___ and hurt when nobody answered her question.",a:["puzzled"],h:"puzzled",ru:"Когда ей никто не ответил, она выглядела озадаченной и обиженной.",x:"Look puzzled and hurt."},
+{id:"g11",w:"g",t:"type",src:1,bank:"g",q:"He tells the best stories — he's always the life of the ___.",a:["party"],h:"party",ru:"Он лучше всех рассказывает истории — всегда душа компании.",x:"The life of the party."},
+{id:"g12",w:"g",t:"type",src:1,bank:"g",q:"Use anecdotes, questions and direct speech to ___ the interest of the audience.",a:["raise"],h:"raise",ru:"Используй истории, вопросы и прямую речь, чтобы вызвать интерес зала.",x:"Raise interest."},
+{id:"g13",w:"g",t:"type",src:1,bank:"g",q:"Through storytelling and joking, he always holds centre ___.",a:["stage"],h:"stage",ru:"Рассказами и шутками он всегда в центре внимания.",x:"Hold centre stage."},
+{id:"g14",w:"g",t:"type",src:1,bank:"g",q:"I ___ agree with you — it's a great idea!",a:["heartily"],h:"heartily",ru:"Я горячо с тобой согласна — отличная идея!",x:"Heartily agree."},
+{id:"g15",w:"g",t:"type",src:1,bank:"g",q:"Every student, without ___, passed the test.",a:["exception"],h:"exception",ru:"Все студенты без исключения сдали тест.",x:"Without exception."},
+{id:"g16",w:"g",t:"type",src:1,bank:"g",q:"I always ___ my lectures on my phone.",a:["record"],h:"record",ru:"Я всегда записываю лекции на телефон.",x:"Record — записывать."},
+{id:"g17",w:"g",t:"type",src:1,bank:"g",q:"For most women, the language of conversation is primarily a language of ___.",a:["rapport"],h:"rapport",ru:"Для большинства женщин язык разговора — прежде всего язык взаимопонимания.",x:"A language of rapport."},
+{id:"g18",w:"g",t:"type",src:1,bank:"g",q:"It is a way of ___ connections and negotiating relationships.",a:["establishing"],h:"establishing",ru:"Это способ налаживать связи и выстраивать отношения.",x:"A way of + -ing."},
+{id:"g19",w:"g",t:"type",src:1,bank:"g",q:"For most men, talk is primarily a means to ___ independence.",a:["preserve"],h:"preserve",ru:"Для большинства мужчин разговор — прежде всего способ сохранить независимость.",x:"Preserve independence."},
+{id:"g20",w:"g",t:"type",src:1,bank:"g",q:"Men try to negotiate and ___ status in a hierarchical social order.",a:["maintain"],h:"maintain",ru:"Мужчины стараются выяснять и удерживать статус в иерархии.",x:"Maintain status."},
+{id:"g21",w:"g",t:"type",src:1,bank:"g",q:"When a friend tells a story, many women try to ___ experiences by telling a similar one.",a:["match"],h:"match",ru:"Когда подруга что-то рассказывает, многие женщины отвечают похожей историей.",x:"Match experiences."},
+{id:"g22",w:"g",t:"type",src:1,q:"Communication is the art of using words ___ to impart information or ideas. (EFFECTIVE)",a:["effectively"],h:"effectively",ru:"Общение — это искусство умело подбирать слова, чтобы передавать информацию и идеи.",x:"Use words effectively."},
+{id:"g23",w:"g",t:"type",src:1,bank:"g",q:"In this course, the emphasis is ___ on speaking.",a:["placed"],h:"placed",ru:"В этом курсе упор делается на говорение.",x:"The emphasis is placed on."},
+{id:"g24",w:"g",t:"type",src:1,bank:"g",q:"Women prefer ___ speaking, while men prefer public speaking.",a:["private"],h:"private",ru:"Женщины предпочитают разговор наедине, мужчины — публичные выступления.",x:"Private speaking vs public speaking."},
+{id:"g25",w:"g",t:"type",src:1,bank:"g",q:"We need a new ___ to this problem.",a:["approach"],h:"approach",ru:"Нам нужен новый подход к этой проблеме.",x:"An approach to — подход к."},
+{id:"g26",w:"g",t:"mc",src:1,q:"It's polite to smile when you ___ a stranger.",o:["approach","approach to","come"],a:"approach",ru:"Вежливо улыбнуться, когда подходишь к незнакомцу.",x:"Approach someone — без to."},
+{id:"g27",w:"g",t:"mc",src:1,q:"Men are often concerned about rank and ___ in society.",o:["position","place","post"],a:"position",ru:"Мужчин часто волнуют ранг и положение в обществе.",x:"Rank and position."},
+{id:"g28",w:"g",t:"mc",src:1,q:"Teenagers often criticise peers who try to stand ___.",o:["out","up","by"],a:"out",ru:"Подростки часто критикуют сверстников, которые пытаются выделиться.",x:"Stand out — выделяться."},
+{id:"g29",w:"g",t:"mc",src:1,q:"It's vital to ___ a rapport with the people you work with.",o:["negotiate","exhibit","display","establish"],a:"establish",ru:"Очень важно наладить контакт с теми, с кем работаешь.",x:"Establish rapport."},
+{id:"g30",w:"g",t:"mc",src:1,q:"His behaviour ___ similarities to that of other young people starting work.",o:["displays","imparts","establishes","performs"],a:"displays",ru:"Его поведение похоже на поведение других молодых людей в начале карьеры.",x:"Display similarities."},
+{id:"g31",w:"g",t:"mc",src:1,q:"The people who were questioned were chosen at ___.",o:["option","random","chance","accident"],a:"random",ru:"Опрошенных выбрали наугад.",x:"At random."},
+{id:"g32",w:"g",t:"mc",src:1,q:"The point of the presentation is to ___ general information about the company.",o:["exhibit","inspire","display","impart"],a:"impart",ru:"Цель презентации — дать общую информацию о компании.",x:"Impart information."},
+{id:"g33",w:"g",t:"type",src:1,q:"He didn't get the job because he didn't ___ enough knowledge and skills.",a:["exhibit","display","show"],h:"exhibit",ru:"Его не взяли, потому что он не показал достаточно знаний и навыков.",x:"Exhibit knowledge and skills."},
+{id:"g34",w:"g",t:"build",q:"Мужчины и женщины общаются по-разному.",a:"Men and women communicate differently.",ru:"Мужчины и женщины общаются по-разному.",x:"Communicate differently."},
+{id:"g35",w:"g",t:"build",q:"Она всегда душа компании.",a:"She is always the life of the party.",alt:["She's always the life of the party."],ru:"Она всегда душа компании.",x:"The life of the party."},
+{id:"i1",w:"i",t:"type",src:1,say:1,q:"What you do is more important than what you say.",a:["actions speak louder than words"],h:"actions speak louder than words",ru:"Дела говорят громче слов.",x:"a___ s___ l___ t___ w___."},
+{id:"i2",w:"i",t:"type",src:1,say:1,q:"Don't start talking until you have thought about what you want to say.",a:["think before you speak"],h:"think before you speak",ru:"Думай, прежде чем говорить.",x:"t___ b___ y___ s___."},
+{id:"i3",w:"i",t:"type",src:1,say:1,q:"Get a chance to say something.",a:["get a word in edgeways","get a word in edgewise"],h:"get a word in edgeways",ru:"Вставить хоть слово.",x:"g___ a w___ i___ e___."},
+{id:"i4",w:"i",t:"type",src:1,say:1,q:"Hear about a rumour passed from one person to another.",a:["hear it on the grapevine"],h:"hear it on the grapevine",ru:"Узнать по сарафанному радио.",x:"h___ i___ o___ t___ g___."},
+{id:"i5",w:"i",t:"type",src:1,say:1,q:"Share similar ideas.",a:["be on the same wavelength","on the same wavelength"],h:"be on the same wavelength",ru:"Быть на одной волне.",x:"b___ o___ t___ s___ w___."},
+{id:"i6",w:"i",t:"type",src:1,say:1,q:"Talk about the most important things immediately.",a:["get straight to the point"],h:"get straight to the point",ru:"Сразу перейти к делу.",x:"g___ s___ t___ t___ p___."},
+{id:"i7",w:"i",t:"type",src:1,say:1,q:"Talk briefly to someone.",a:["have a quick word with someone","have a quick word with somebody","have a quick word"],h:"have a quick word with someone",ru:"Перекинуться парой слов.",x:"h___ a q___ w___ w___ s___."},
+{id:"i8",w:"i",t:"mc",src:1,q:"It's what you do that counts. As they say: 'Actions speak ___ than words'.",o:["better","louder","more"],a:"louder",ru:"Важно то, что делаешь. Как говорится, дела говорят громче слов.",x:"Фраза неизменна: louder."},
+{id:"i9",w:"i",t:"mc",src:1,q:"James is always saying the wrong thing. He never ___ before he speaks.",o:["considers","reflects","thinks"],a:"thinks",ru:"Джеймс вечно говорит не то. Он никогда не думает, прежде чем сказать.",x:"Think before you speak."},
+{id:"i10",w:"i",t:"mc",src:1,q:"I wish you'd get ___ to the point instead of talking about everything else first.",o:["straight","direct","strict"],a:"straight",ru:"Лучше бы ты сразу переходил к делу.",x:"Get straight to the point."},
+{id:"i11",w:"i",t:"mc",src:1,q:"We all get on really well as we seem to be on the same ___.",o:["wavelength","edgeways","grapevine"],a:"wavelength",ru:"Мы отлично ладим — похоже, мы на одной волне.",x:"On the same wavelength."},
+{id:"i12",w:"i",t:"mc",src:1,q:"Excuse me, can I have a ___ word with you?",o:["fast","rapid","quick"],a:"quick",ru:"Извините, можно вас на пару слов?",x:"Только quick: a quick word."},
+{id:"i13",w:"i",t:"mc",src:1,q:"Is it official that Fred is going to leave the company, or did you just ___ it on the grapevine?",o:["find","hear","know"],a:"hear",ru:"Это официально, что Фред уходит, или ты просто услышала по слухам?",x:"Hear it on the grapevine."},
+{id:"i14",w:"i",t:"mc",src:1,q:"She never stops talking and no one else can get a ___ in edgeways.",o:["sound","word","thought"],a:"word",ru:"Она не замолкает, и никто не может вставить ни слова.",x:"Get a word in edgeways."},
+{id:"i15",w:"i",t:"type",bank:"i",q:"Our collab works because the editor and I are ___ — we laugh at the same jokes.",a:["on the same wavelength"],h:"on the same wavelength",ru:"Наш коллаб работает: мы с монтажёром на одной волне — смеёмся над одним и тем же.",x:"Be on the same wavelength."},
+{id:"i16",w:"i",t:"type",bank:"i",q:"The first five seconds of a Reel must ___ — no long intros.",a:["get straight to the point"],h:"get straight to the point",ru:"Первые пять секунд рилса должны сразу переходить к делу.",x:"Get straight to the point."},
+{id:"i17",w:"i",t:"type",bank:"i",q:"Nobody announced it officially — I just ___.",a:["heard it on the grapevine"],h:"heard it on the grapevine",ru:"Официально никто не объявлял — я просто узнала по слухам.",x:"Прошлое: hear → heard."},
+{id:"i18",w:"i",t:"type",bank:"i",q:"Two guests talked over each other the whole podcast — the host couldn't ___.",a:["get a word in edgeways","get a word in edgewise"],h:"get a word in edgeways",ru:"Два гостя весь подкаст перебивали друг друга — ведущий не мог вставить ни слова.",x:"Couldn't get a word in edgeways."},
+{id:"i19",w:"i",t:"mc",ctx:"Друг пообещал помочь с монтажом и правда пришёл в субботу в восемь утра.",q:"Какая фраза подходит?",o:["Actions speak louder than words.","I heard it on the grapevine.","I couldn't get a word in edgeways."],a:"Actions speak louder than words.",ru:"Дела говорят громче слов.",x:"Сделал, а не просто пообещал."},
+{id:"i20",w:"i",t:"build",q:"Можно тебя на пару слов?",a:"Can I have a quick word with you?",alt:["Could I have a quick word with you?"],ru:"Можно тебя на пару слов?",x:"Have a quick word with someone."},
+{id:"i21",w:"i",t:"build",q:"Подумай, прежде чем говорить.",a:"Think before you speak.",ru:"Подумай, прежде чем говорить.",x:"Think before you speak."},
+{id:"m1",w:"t",t:"cut",q:"Currently Eleanor **is researching** trends in communication.",a:"pc",ru:"Сейчас Элеонора изучает тенденции в общении.",x:"Currently: идёт прямо сейчас."},
+{id:"m2",w:"t",t:"cut",q:"Technology and emotions **affect** communication networks.",a:"ps",ru:"Технологии и эмоции влияют на сети общения.",x:"Общая истина."},
+{id:"m3",w:"t",t:"cut",q:"Last year she **had** the idea for her research.",a:"pas",ru:"В прошлом году у неё появилась идея исследования.",x:"Last year: точка в прошлом."},
+{id:"m4",w:"t",t:"cut",q:"While she **was observing** a doctor, she realised something.",a:"pac",ru:"Наблюдая за врачом, она кое-что поняла.",x:"Фон, на который легло событие."},
+{id:"m5",w:"t",t:"cut",q:"**Have** you ever **interrupted** someone during a meeting?",a:"pp",ru:"Ты когда-нибудь перебивала кого-то на совещании?",x:"Ever: опыт до сейчас."},
+{id:"m6",w:"t",t:"cut",q:"She **has** never **learnt** how to stop talking.",a:"pp",ru:"Она так и не научилась замолкать.",x:"Never до сих пор."},
+{id:"m7",w:"t",t:"cut",q:"By the time I joined the call, they **had** already **discussed** the main point.",a:"pap",ru:"Когда я подключилась к звонку, главное уже обсудили.",x:"Раньше, чем я подключилась."},
+{id:"m8",w:"t",t:"cut",q:"I **post** a new video every Friday.",a:"ps",ru:"Я выкладываю новое видео каждую пятницу.",x:"Every Friday: повторяется."},
+{id:"m9",w:"t",t:"cut",q:"Shh, I **am recording** a voiceover right now.",a:"pc",ru:"Тсс, я прямо сейчас записываю закадр.",x:"Right now."},
+{id:"m10",w:"t",t:"cut",q:"The battery died while I **was filming** the intro.",a:"pac",ru:"Батарея села, пока я снимала вступление.",x:"Фон, на который легло событие."},
+{id:"t1",w:"t",t:"type",src:1,q:"Currently Eleanor ___ (research) trends in communication in the workplace.",a:["is researching","'s researching"],h:"is researching",ru:"Сейчас Элеонора изучает тенденции общения на работе.",x:"Currently → is + -ing."},
+{id:"t2",w:"t",t:"type",src:1,q:"She ___ (focus) on how technology and emotions affect communication networks.",a:["is focusing","is focussing","'s focusing","'s focussing"],h:"is focusing",ru:"Она изучает, как технологии и эмоции влияют на сети общения.",x:"Тот же процесс сейчас → is + -ing."},
+{id:"t3",w:"t",t:"type",src:1,q:"She is focusing on how technology and emotions ___ (affect) communication networks.",a:["affect"],h:"affect",ru:"Она изучает, как технологии и эмоции влияют на сети общения.",x:"Общая истина → Present Simple; их двое — без -s."},
+{id:"t4",w:"t",t:"type",src:1,q:"Methods of communication ___ (change) rapidly in our society today.",a:["are changing","'re changing"],h:"are changing",ru:"Способы общения в нашем обществе сегодня быстро меняются.",x:"Today + rapidly → are + -ing."},
+{id:"t5",w:"t",t:"type",src:1,q:"Last year Eleanor ___ (work) in a hospital when she had the idea for her research.",a:["was working"],h:"was working",ru:"В прошлом году Элеонора работала в больнице, когда ей пришла идея исследования.",x:"Фон, на который легла идея → was + -ing."},
+{id:"t6",w:"t",t:"type",src:1,q:"One day, while she ___ (observe) a doctor talking to one of his patients, she realised something.",a:["was observing"],h:"was observing",ru:"Однажды, наблюдая за разговором врача с пациентом, она кое-что поняла.",x:"While + фон → was + -ing."},
+{id:"t7",w:"t",t:"type",src:1,q:"While she was observing a doctor, she ___ (realise) that his communication skills were poor.",a:["realised","realized"],h:"realised",ru:"Наблюдая за врачом, она поняла, что он плохо общается.",x:"Короткое событие поверх фона → Past Simple."},
+{id:"t8",w:"t",t:"type",src:1,q:"She realised that his lack of communication skills ___ (have) a detrimental effect on the patient.",a:["was having","had","had had"],h:"was having",ru:"Она поняла, что его неумение общаться плохо сказывается на пациенте.",x:"Эффект шёл в тот момент → was having."},
+{id:"t9",w:"t",t:"type",src:1,q:"___ (you / ever / interrupt) someone during a meeting?",a:["have you ever interrupted"],h:"Have you ever interrupted",ru:"Ты когда-нибудь перебивала кого-то на совещании?",x:"Ever: опыт → Have you ever + V3?"},
+{id:"t10",w:"t",t:"type",src:1,ctx:"— Yes, I have.",q:"When ___ (that / happen)?",a:["did that happen"],h:"did that happen",ru:"Когда это было?",x:"When? — время в прошлом → did + V1."},
+{id:"t11",w:"t",t:"type",src:1,q:"Last month, actually. I ___ (listen) to a colleague saying she was the only one who did any work.",a:["was listening"],h:"was listening",ru:"В прошлом месяце. Я слушала коллегу, которая говорила, что работает только она.",x:"Фон в прошлом → was + -ing."},
+{id:"t12",w:"t",t:"type",src:1,q:"A colleague was saying she was the only one who ___ (do) any work in the team.",a:["was doing","did"],h:"was doing",ru:"Коллега говорила, что в команде работает только она.",x:"Тот период в прошлом → was doing."},
+{id:"t13",w:"t",t:"type",src:1,q:"What ___ (you / say) to her?",a:["did you say"],h:"did you say",ru:"Что ты ей сказала?",x:"Вопрос о прошлом → did + V1."},
+{id:"t14",w:"t",t:"type",src:1,q:"___ (she / stop) talking?",a:["did she stop"],h:"Did she stop",ru:"Она замолчала?",x:"Did + она + V1."},
+{id:"t15",w:"t",t:"type",src:1,q:"No. She ___ (never / learn) how to stop talking. That's half her problem.",a:["has never learnt","has never learned","'s never learnt","'s never learned"],h:"has never learnt",ru:"Нет. Она так и не научилась замолкать. В этом половина её проблемы.",x:"Never до сих пор → has + V3."},
+{id:"t16",w:"t",t:"mc",q:"Look! Everyone ___ at your new video.",o:["is laughing","laughs","has laughed"],a:"is laughing",ru:"Смотри! Все смеются над твоим новым видео.",x:"Look! — прямо сейчас."},
+{id:"t17",w:"t",t:"mc",q:"I ___ my first Reel two years ago.",o:["made","have made","had made"],a:"made",ru:"Свой первый рилс я сделала два года назад.",x:"Ago → Past Simple."},
+{id:"t18",w:"t",t:"mc",q:"By the time the lecture started, I ___ my notes.",o:["had lost","have lost","was losing"],a:"had lost",ru:"К началу лекции я уже потеряла конспект.",x:"Раньше начала лекции → had + V3."},
+{id:"t19",w:"t",t:"type",q:"This is the third time I ___ (rewrite) this script.",a:["have rewritten","'ve rewritten"],h:"have rewritten",ru:"Я переписываю этот сценарий уже третий раз.",x:"This is the third time… → have + V3."},
+{id:"t20",w:"t",t:"type",q:"While I ___ (wait) for my turn, I practised my speech.",a:["was waiting"],h:"was waiting",ru:"Пока ждала своей очереди, я репетировала речь.",x:"While + фон → was + -ing."},
+{id:"t21",w:"t",t:"type",q:"My voice usually ___ (crack) when I'm nervous.",a:["cracks"],h:"cracks",ru:"Когда я нервничаю, у меня обычно срывается голос.",x:"Usually → Present Simple; my voice → -s."},
+{id:"t22",w:"t",t:"build",q:"Ты когда-нибудь выступала публично?",a:"Have you ever spoken in public?",alt:["Have you ever made a speech in public?","Have you ever given a speech in public?"],ru:"Ты когда-нибудь выступала публично?",x:"Ever → Have you ever + V3?"},
+{id:"t23",w:"t",t:"build",q:"Когда я пришла, все уже ушли.",a:"When I arrived, everyone had already left.",alt:["When I came, everyone had already left.","Everyone had already left when I arrived."],ru:"Когда я пришла, все уже ушли.",x:"Ушли раньше моего прихода → had + V3."},
+{id:"t24",w:"t",t:"build",q:"Сейчас я учу новые слова.",a:"I am learning new words now.",alt:["I'm learning new words now.","Now I am learning new words.","I am learning new words right now."],ru:"Сейчас я учу новые слова.",x:"Сейчас → am + -ing."}
+];
+var TENSES=[
+{k:"ps",use:"Привычки, факты, общие истины.",mark:"usually, every Friday, always, often",ex:"Technology and emotions affect communication.",trap:"Он / она → -s: my voice cracks."},
+{k:"pc",use:"Прямо сейчас; временно.",mark:"now, right now, currently, Look!, today",ex:"Methods of communication are changing rapidly today.",trap:"Know, understand, own — без -ing."},
+{k:"pp",use:"Результат сейчас; опыт.",mark:"ever, never, already, the third time",ex:"She has never learnt how to stop talking.",trap:"С ago, last, yesterday — нельзя."},
+{k:"pas",use:"Закончилось, есть время в прошлом.",mark:"yesterday, last …, … ago, When…?",ex:"When did that happen?",trap:"Вопрос When…? — did + V1."},
+{k:"pac",use:"Фон в прошлом, его прервали.",mark:"while, when, at that moment",ex:"While she was observing a doctor, she realised…",trap:"Фон — Continuous, событие — Simple."},
+{k:"pap",use:"Что случилось раньше другого прошлого.",mark:"by the time, before, already",ex:"By the time I joined, they had already discussed it.",trap:"Без второго прошлого события Past Perfect не нужен."}
+];
+var JINGLES={
+c:["I [bumped into] Ben at the station today —","we'd [lost touch with] each other when he moved away.","We [caught up with] the news, and he said: «Let's [stay in touch]»,","«[get in touch with] me later — it won't cost much».","I [keep track of] his posts, I [track down] his page,","we'll [take part] in a seminar and [make a speech] on stage."],
+n:["[Body language] talks while your mouth stays shut,","[eye contact] says «I'm here» — no ifs, no but.","[Shake hands], [bow] or [wave] — every culture's own way,","don't [invade] my [personal space], just [leave space], okay?","Pick a [sample] [at random], [recreate] the test,","[don't judge by appearance] — [average] is the rest."],
+u:["[Remain in control], [maintain good posture],","[make a good first impression] — that's the rule of the culture.","Be [assertive], not aggressive, [stay calm and polite],","[be a good listener], [be yourself] — and you're right.","My [voice cracks under pressure], my hands [give away] the fear,","but I [make an effort] — and [confidence] is near."],
+g:["He'd [interrupt], be [talkative], with [lengthy] explanations,","she'd [complain about] the noise and the conversations.","They [burst into laughter], she [looked puzzled and hurt],","he's [the life of the party] — the first and the last word.","Women [establish rapport], [match experiences], connect,","men [maintain status], [preserve independence] — and [hold centre stage], direct.","[Impart information], [display similarities], [exhibit knowledge] and skill,","[approach] without «to» — and [place the emphasis] at will."],
+i:["Same jokes, same vibe — [on the same wavelength],","[get straight to the point], skip the speech of great length.","[Have a quick word] — just a minute, no more,","I [heard it on the grapevine] by the office door.","She talks and she talks — can't [get a word in edgeways],","[think before you speak], or you'll pay for it for days.","Promises are pretty, but here's what is true:","[actions speak louder than words] — show what you do."],
+t:["Every day, as a rule — [Present Simple] is the tool.","[Currently], right now — [am, is, are + -ing], and how.","[Have + done], from then to now: [ever], [never] — and wow.","[Last year], [when], [ago] — [Past Simple], clear and slow.","[While] she [was observing], the idea came through —","[was / were + -ing] is the background view.","[Had + done] — the earlier past: it happened first, the other last."]
+};
+var CARDS={
+c:[["send a text message","отправить сообщение",""],["make a phone call","позвонить",""],["speak to someone face to face","поговорить лично",""],["make a presentation / speech","выступить с презентацией / речью",""],["take part / participate actively in","активно участвовать в",""],["get in touch with","связаться (= to contact)",""],["stay in touch with","оставаться на связи",""],["lose touch with","потерять связь",""],["bump into someone","случайно встретить",""],["track down someone","разыскать",""],["keep track of","следить за тем, что происходит",""],["catch up with","обменяться новостями",""],["attempt / an attempt","пытаться / попытка",""],["deliver / delivery","доставлять / доставка",""],["take place","состояться",""],["research / study / survey","исследование",""],["improve communication","улучшить общение",""],["in relation to","применительно к",""]],
+n:[["non-verbal communication","невербальное общение",""],["shake hands / bow / wave","пожать руки / поклониться / помахать",""],["personal space","личное пространство",""],["invade one's personal space","вторгнуться в личное пространство",""],["body language","язык тела",""],["eye contact","зрительный контакт",""],["avoid some gestures","избегать некоторых жестов",""],["make a difference","иметь значение",""],["a degree of separation","степень разделённости, «рукопожатие»",""],["be influenced by / have an influence on","быть под влиянием / влиять на",""],["influential","влиятельный",""],["prove the theory","доказать теорию",""],["choose at random a sample","выбрать выборку наугад",""],["target audience","целевая аудитория",""],["inspiring / inspired","вдохновляющий / вдохновлённый",""],["judge by appearance","судить по внешности",""],["wonder","задаваться вопросом",""],["recreate the experiment on the internet","воссоздать эксперимент в интернете",""],["involve / involvement","вовлекать / вовлечённость",""],["average age","средний возраст",""]],
+u:[["remain in control of emotions and voice","держать эмоции и голос под контролем",""],["maintain good posture","держать осанку",""],["engage people","увлекать, вовлекать людей",""],["make a good first impression","произвести хорошее первое впечатление",""],["assertive","уверенный, без агрессии",""],["stay calm and polite","сохранять спокойствие и вежливость",""],["be a good listener","уметь слушать",""],["be yourself","будь собой",""],["confidence / a lack of confidence in","уверенность / неуверенность в",""],["the main reason for","главная причина",""],["make an effort to do","постараться сделать",""],["voice cracks under pressure","голос срывается от напряжения",""],["give away emotions","выдать эмоции",""],["a speech impediment","дефект речи",""],["be aware of","осознавать",""],["interact successfully with","успешно взаимодействовать с",""],["irritating / irritated","раздражающий / раздражённый",""],["change rapidly / dramatically / constantly","быстро / резко / постоянно меняться",""],["occur frequently","часто случаться",""],["behave differently","вести себя по-разному",""]],
+g:[["communicate differently","общаться по-разному",""],["a conversational style","манера разговора",""],["interrupt","перебивать",""],["suburban","пригородный",""],["particularly talkative","особенно болтливый",""],["lengthy comments","затянутые комментарии",""],["complain about / a complaint","жаловаться на / жалоба",""],["heartily agree","горячо согласиться",""],["burst into laughter","расхохотаться",""],["look puzzled and hurt","выглядеть озадаченной и обиженной",""],["the life of the party","душа компании",""],["raise the interest of the audience","вызвать интерес зала",""],["hold centre stage","быть в центре внимания",""],["with / without exception","с исключением / без исключения",""],["display similarities / differences","проявлять сходство / различия",""],["establish connections / rapport","наладить связи / взаимопонимание",""],["exhibit knowledge and skills","показать знания и навыки",""],["impart information","передавать информацию",""],["maintain status / dominance","удерживать статус / власть",""],["negotiate relationships / status","выстраивать отношения / статус",""],["match experiences","отвечать похожей историей",""],["preserve independence","сохранять независимость",""],["place the emphasis on","делать упор на",""],["stand out","выделяться",""],["private / public speaking","разговор наедине / публичное выступление",""],["approach / approach someone","подход / подойти к кому-то (без to)",""]],
+i:[["actions speak louder than words","дела говорят громче слов","Actions speak louder than words."],["think before you speak","думай, прежде чем говорить","He never thinks before he speaks."],["get a word in edgeways","вставить хоть слово","No one else can get a word in edgeways."],["hear it on the grapevine","узнать по сарафанному радио","Did you just hear it on the grapevine?"],["be on the same wavelength","быть на одной волне","We seem to be on the same wavelength."],["get straight to the point","сразу перейти к делу","Get straight to the point."],["have a quick word with someone","перекинуться парой слов","Can I have a quick word with you?"]]
+};
+var WF=[];
+var TALKS=[
+{en:"Tell the story of the last time you bumped into someone you hadn't seen for ages.",ru:"Как ты в последний раз случайно встретила человека, которого давно не видела.",ch:["bumped into","lost touch with","was walking","caught up with","stay in touch"]},
+{en:"How do people in different cultures greet each other and say goodbye?",ru:"Как люди в разных культурах здороваются и прощаются.",ch:["shake hands","bow","wave","personal space","avoid some gestures","make a difference"]},
+{en:"Give advice to someone who has to make a speech tomorrow.",ru:"Совет человеку, которому завтра выступать.",ch:["remain in control","maintain good posture","make a good first impression","voice cracks","be yourself"]},
+{en:"Describe the most talkative person you know.",ru:"Самый болтливый человек, которого ты знаешь.",ch:["particularly talkative","interrupt","get a word in edgeways","lengthy","the life of the party"]},
+{en:"Do men and women really communicate differently?",ru:"Правда ли мужчины и женщины общаются по-разному.",ch:["communicate differently","establish rapport","maintain status","match experiences","public speaking"]},
+{en:"Has the internet improved communication or not?",ru:"Улучшил ли интернет общение.",ch:["improved communication","in relation to","social media users","increased dramatically","keep track of"]},
+{en:"Describe someone you are on the same wavelength with.",ru:"Человек, с которым ты на одной волне.",ch:["on the same wavelength","get straight to the point","have a quick word","heard it on the grapevine"]}
+];
+var MODES=[
+["Повторить, пока не забылось","Собирает фразы, которые начали рассыпаться, и добавляет немного новых. Повтор на грани забывания закрепляет сильнее всего.","Cepeda и др., 2006; Rawson и Dunlosky"],
+["Проба вслепую","3 вопроса до правил. Попытка ответить до объяснения, даже неверная, делает разбор крепче.","Pan и Sana; Richland, Kornell, Kao"],
+["Правила и стишок","Схема, карточки и стишок. Ключевые слова в стишке можно закрывать шумом и вспоминать по памяти. Пение и созвучия помогают запоминать фразы.","Ludke и др., 2014; Boers и Lindstromberg"],
+["Тренировка","12 вопросов вперемешку. Ошибка возвращается в конце, пока не ответишь сама. Перемешивание учит различать похожие времена.","Adesope и др., 2017; Pan и др., 2019"],
+["Подсказка","Показывает ответ, но сначала почти весь в шуме, потом меньше. Метод исчезающих подсказок.","Glisky, Schacter, Tulving, 1986"],
+["Говорение на время","Одна тема, три рассказа: 60, 45 и 30 секунд. Повтор с сокращением времени повышает беглость речи.","Nation, 1989; Boers, 2014"],
+["Контрольная","20 вопросов из всех разделов, без подсказок и повторов. Формат как на тесте.","Adesope и др., 2017"],
+["Процент","Сколько фраз сейчас читается без шума. Каждая фраза после верного ответа живёт дольше: 1 день, потом 3, 7, 16, 35.","Cepeda и др., 2006"]
+];
+var SRC=[
+["Adesope, Trevisan, Sundararajan, 2017. Rethinking the Use of Tests","https://education.wsu.edu/documents/2018/01/rethinking-use-tests.pdf/"],
+["Cepeda et al., 2006. Distributed practice in verbal recall tasks","https://pubmed.ncbi.nlm.nih.gov/16719566/"],
+["Rawson, Dunlosky. Successive Relearning","https://journals.sagepub.com/doi/full/10.1177/09637214221100484"],
+["Dunlosky et al., 2013. Effective learning techniques","https://www.psychologicalscience.org/news/releases/which-study-strategies-make-the-grade.html"],
+["Glisky, Schacter, Tulving, 1986. Method of vanishing cues","https://pubmed.ncbi.nlm.nih.gov/3755140/"],
+["Pan, Sana. Pretesting versus posttesting","https://pure.athabascau.ca/en/publications/pretesting-versus-posttesting-comparing-the-pedagogical-benefits-/"],
+["Interleaved and blocked L2 grammar practice","https://sage.figshare.com/collections/The_role_of_working_memory_in_blocked_and_interleaved_grammar_practice_Proceduralization_of_L2_syntax/4925595"],
+["Ludke, Ferreira, Overy, 2014. Singing can facilitate foreign language learning","https://ferreiralab.faculty.ucdavis.edu/wp-content/uploads/sites/222/2015/05/Ludke-et-al.-2014_SingingForeignLanguage_Mem-Cog.pdf"],
+["Boers, Lindstromberg, Webb, 2014. Alliterative expressions","https://ir.lib.uwo.ca/edupub/91"],
+["Effects of the 4/3/2 activity revisited","https://discovery.ucl.ac.uk/10128571/1/LTR2021.pdf"],
+["Symons, Johnson, 1997. Self-reference effect in memory","https://digitalcommons.lib.uconn.edu/chip_docs/9"]
+];
+var DAY=864e5,INT=[0.5,1,3,7,16,35],KEY="pomekhi.u1voc.v1",GL="▓▒░#%&@$/\\<>*+=?";
+var S=fresh();
+function fresh(){return{it:{},jg:{},best:0,talks:0,t:0,bk:0,start:0,ps:0}}
+function valid(s){return s&&typeof s==="object"&&s.it&&typeof s.it==="object"}
+function loadLocal(){try{var s=JSON.parse(localStorage.getItem(KEY));if(valid(s))return s}catch(e){}return null}
+function idb(cb){try{var r=indexedDB.open("pomekhi.u1voc.v1",1);r.onupgradeneeded=function(){r.result.createObjectStore("s")};r.onsuccess=function(){cb(r.result)};r.onerror=function(){cb(null)}}catch(e){cb(null)}}
+function idbGet(cb){idb(function(db){if(!db)return cb(null);try{var g=db.transaction("s").objectStore("s").get("state");g.onsuccess=function(){cb(valid(g.result)?g.result:null)};g.onerror=function(){cb(null)}}catch(e){cb(null)}})}
+function idbPut(v){idb(function(db){if(!db)return;try{db.transaction("s","readwrite").objectStore("s").put(v,"state")}catch(e){}})}
+function save(){S.t=Date.now();if(!S.start)S.start=S.t;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}idbPut(JSON.parse(JSON.stringify(S)));askPersist()}
+function askPersist(){if(S.ps)return;S.ps=1;try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().then(function(g){S.ps=g?2:1})}catch(e){}}
+function boot(){var l=loadLocal();if(l)S=l;home();idbGet(function(d){if(d&&(!l||(d.t||0)>(l.t||0))){S=d;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(view==="home")home()}})}
+function byId(id){for(var i=0;i<ITEMS.length;i++)if(ITEMS[i].id===id)return ITEMS[i]}
+function inS(w){return ITEMS.filter(function(x){return x.w===w})}
+function mix(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function rnd(seed){var t=(seed+0x6D2B79F5)>>>0;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}
+function seen(id){var s=S.it[id];return!!(s&&s.seen)}
+function erosion(id){var s=S.it[id];if(!s||!s.seen)return 1;return Math.max(0,Math.min(1,(Date.now()-s.last)/DAY/(INT[s.b]*1.8)))}
+function mark(id,ok){var s=S.it[id]||{b:0};if(ok){s.b=s.seen?Math.min(5,s.b+1):1;s.last=Date.now()}else{s.b=0;s.last=Date.now()-0.54*DAY}s.seen=1;S.it[id]=s;save()}
+function sig(w){var a=w?inS(w):ITEMS,t=0;a.forEach(function(x){t+=1-erosion(x.id)});return Math.round(t/a.length*100)}
+function noisy(){return ITEMS.filter(function(x){return seen(x.id)&&erosion(x.id)>=0.55})}
+function erode(text,e,seed){var o="";for(var i=0;i<text.length;i++){var ch=text[i];if(/[A-Za-zА-Яа-яЁё0-9']/.test(ch)&&rnd(seed+i*7919)<e)o+='<span class="g" data-g>'+esc(GL[Math.floor(rnd(seed+i*31)*GL.length)])+"</span>";else o+=esc(ch)}return o}
+function norm(s){s=String(s||"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/[“”"«»]/g,"").trim();s=s.replace(/won't/g,"will not").replace(/can't/g,"can not").replace(/cannot/g,"can not").replace(/n't/g," not").replace(/'ve\b/g," have").replace(/'m\b/g," am").replace(/'re\b/g," are").replace(/'ll\b/g," will");return s.replace(/[.!?,;:]/g," ").replace(/\s+/g," ").trim()}
+function wnorm(s){return String(s||"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/[.!?,;:"«»“”]/g,"")}
+function answers(it){return it.t==="build"?[it.a].concat(it.alt||[]):(Array.isArray(it.a)?it.a:[it.a])}
+function say(t){try{if(!window.speechSynthesis)return;speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="en-GB";u.rate=.92;speechSynthesis.speak(u)}catch(e){}}
+function spoken(it){if(it.say)return answers(it)[0];if(it.t==="cut")return it.q.replace(/\*\*/g,"");if(it.t==="build")return it.a;var q=it.q.split(" → ").pop().replace(/\s*\([^)]*\)/g,"");var p=(it.t==="mc"?it.a:answers(it)[0]).split(" / "),k=0;if(q.indexOf("___")<0)return it.t==="mc"?it.a:q;return q.replace(/___/g,function(){return p[Math.min(k++,p.length-1)]})}
+function clip(kind){var P=150,r="";function R(x,y,w,n){return'<rect class="clip" x="'+x+'" y="'+y+'" width="'+w+'" height="10"/>'+(n?'<text class="num" x="'+(x+w/2-2.5)+'" y="'+(y+8)+'">'+n+"</text>":"")}
+if(kind==="ps")[14,42,70,98,126,162,184].forEach(function(x){r+=R(x,12,8)});if(kind==="pc")r+=R(126,12,48);if(kind==="pp")r+=R(64,12,P-64)+'<circle class="dot" cx="'+P+'" cy="17" r="4"/>';if(kind==="pas")r+=R(66,12,16);if(kind==="pac")r+=R(30,30,94)+R(82,12,10);if(kind==="pap")r+=R(30,12,22,"1")+R(98,12,22,"2");if(kind==="ppc")r+=R(44,30,P-44)+'<circle class="dot" cx="'+P+'" cy="35" r="4"/>';if(kind==="papc")r+=R(20,30,80)+R(100,12,16,"2");
+return'<svg class="tl" viewBox="0 0 200 56" role="img" aria-label="'+esc(CUTS[kind].name)+'"><line class="trk" x1="0" y1="17" x2="200" y2="17"/><line class="trk" x1="0" y1="35" x2="200" y2="35"/><text class="lbl" x="2" y="52">ПРОШЛОЕ</text><text class="lbl" x="168" y="52">ДАЛЬШЕ</text>'+r+'<line class="ph" x1="'+P+'" y1="4" x2="'+P+'" y2="46"/><text class="phl" x="'+(P-15)+'" y="54">СЕЙЧАС</text></svg>'}
+function bars(p){var h="";for(var i=0;i<5;i++)h+='<i class="'+(p>i*20+5?"on":"")+'" style="height:'+(5+i*3)+'px"></i>';return'<div class="bars" aria-hidden="true">'+h+"</div>"}
+var app=document.getElementById("app"),view="home",sess=null,flick=null,talk=null,nzT=null;
+function show(h,v){view=v||view;app.innerHTML=h+'<div class="foot">ROTAZ</div>';window.scrollTo(0,0);flicker()}
+function calm(){return window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches}
+function flicker(){if(flick)clearInterval(flick);if(calm())return;flick=setInterval(function(){var g=app.querySelectorAll("[data-g]");for(var i=0;i<Math.min(12,g.length);i++){var el=g[Math.floor(Math.random()*g.length)];el.textContent=GL[Math.floor(Math.random()*GL.length)]}},170)}
+function back(to,label){return'<button class="back" data-go="'+to+'">← '+(label||"назад")+"</button>"}
+function stop(){if(talk&&talk.tm){clearInterval(talk.tm);talk.tm=null}if(nzT){clearInterval(nzT);nzT=null}}
+function home(){stop();var p=sig(),nz=noisy().length,n=ITEMS.filter(function(x){return seen(x.id)}).length;
+var cta=n===0?'<button class="big" data-cmd="clean"><b>Начать</b><span>12 вопросов из всех разделов · около 6 минут</span></button>':'<button class="big" data-cmd="clean"><b>Повторить, пока не забылось</b><span>'+(nz?nz+" фраз уже рассыпаются, плюс немного новых · около 5 минут":"Шума нет: возьмёшь 12 новых фраз · около 6 минут")+"</span></button>";
+var old=n>0&&Date.now()-(S.bk||S.start||Date.now())>7*DAY;
+var list=Object.keys(SECTIONS).map(function(w){var q=sig(w);return'<button class="sec" data-go="sec:'+w+'"><div><b>'+SECTIONS[w].name+"</b><span>"+SECTIONS[w].sub+" · "+inS(w).length+' вопросов</span></div><div class="p">'+bars(q)+q+"%</div></button>"}).join("");
+show('<section class="hero"><h1 class="gl" data-t="ПОМЕХИ">ПОМЕХИ</h1><p class="soft" style="font-size:17px;max-width:32em">Английский: Unit 1 Communication — весь словарь юнита и Unit Test 1. Фразы, которые не повторяешь, рассыпаются в шум. Вспоминаешь — они возвращаются.</p><div class="row" style="align-items:flex-end;gap:16px"><div class="pct">'+p+'<small>%</small></div><div class="lab" style="padding-bottom:8px">столько фраз ты<br>сейчас помнишь</div></div>'+cta+(old?'<button class="warn" data-go="save">Неделя без кода сохранения. Сделай его, чтобы прогресс точно не пропал →</button>':"")+'</section><div class="lab" style="margin-top:22px">разделы</div>'+list+'<div class="grid2"><button class="tile" data-go="talk"><b>Говорение на время</b><span>Выбираешь тему и рассказываешь вслух 3 раза: 60, 45 и 30 секунд.</span></button><button class="tile" data-cmd="final"><b>Контрольная</b><span>20 вопросов из всех разделов, без подсказок. Как тест · 10 минут.</span></button><button class="tile" data-go="save"><b>Сохранение</b><span>Код и файл прогресса: перенести на другой телефон или вернуть.</span></button><button class="tile" data-go="about"><b>Как это устроено</b><span>Что делает каждый режим и на каких исследованиях он стоит.</span></button></div>',"home")}
+function section(w){stop();var p=sig(w),items=inS(w),fr=items.filter(function(x){return!seen(x.id)}).length;
+show(back("home","главная")+'<div class="stack" style="gap:16px"><h2>'+SECTIONS[w].name+'</h2><p class="dim">'+p+"% помнишь · "+items.length+" вопросов · "+fr+' ещё не открыты</p><button class="step" data-cmd="cold" data-w="'+w+'"><span class="n">1</span><span><b>Проба вслепую</b><span>3 вопроса до правил. Ошибаться можно: после промаха объяснение запоминается лучше.</span><em>1 минута</em></span></button><button class="step" data-go="learn:'+w+'"><span class="n">2</span><span><b>Правила и стишок</b><span>Короткая схема, карточки слов с переводом и стишок для запоминания.</span><em>3–5 минут</em></span></button><button class="step" data-cmd="drill" data-w="'+w+'"><span class="n">3</span><span><b>Тренировка</b><span>12 вопросов этого раздела вперемешку. Ошибки вернутся в конце.</span><em>около 6 минут</em></span></button></div>',"sec")}
+function jingle(w){var lv=S.jg[w]||0,e=[0,.45,.8,1][lv],b="";for(var i=1;i<=3;i++)b+='<i class="'+(lv>=i?"on":"")+'"></i>';
+var lines=JINGLES[w].map(function(l,li){return'<div class="jl">'+l.replace(/\[([^\]]+)\]/g,function(m,kw){var sd=hash(w+li+kw);return'<span class="kw" data-kw="'+esc(kw)+'" data-e="'+e+'" data-s="'+sd+'">'+(lv?erode(kw,e,sd):esc(kw))+"</span>"})+"</div>"}).join("");
+return'<div class="jing"><div class="row" style="justify-content:space-between"><span class="lab neon">стишок</span><span class="row" style="gap:8px"><span class="lab">закрыто</span><span class="lv">'+b+"</span></span></div>"+lines+'<p class="dim" style="font-size:14px">Прочитай вслух в ритм. «Закрыть больше» прячет ключевые слова в шум — вспоминай их. Тап по слову — подсмотреть.</p><div class="row"><button class="btn" data-cmd="jsay" data-w="'+w+'">Послушать</button><button class="btn go" data-cmd="jup" data-w="'+w+'"'+(lv>=3?" disabled":"")+'>Закрыть больше</button>'+(lv?'<button class="btn thin" data-cmd="jreset" data-w="'+w+'">Открыть всё</button>':"")+"</div></div>"}
+function learn(w,hide){stop();var body="";
+if(w==="t"){body='<p class="soft">Две дорожки, как в монтаже. Зелёная линия — сейчас. Время выбирается по тому, где лежит действие.</p>'+TENSES.map(function(c){var C=CUTS[c.k];return'<div class="card"><div class="row" style="justify-content:space-between"><h3>'+C.name+'</h3><span class="form">'+C.form+"</span></div>"+clip(c.k)+'<dl class="kv"><dt>когда</dt><dd>'+c.use+"</dd><dt>слова-маркеры</dt><dd>"+c.mark+'</dd><dt>пример</dt><dd style="font-style:italic">'+c.ex+"</dd><dt>ловушка</dt><dd>"+c.trap+"</dd></dl></div>"}).join("")}
+else if(w==="w"){body='<table class="wf"><tbody>'+WF.map(function(r){var wd=r[4]?'<span class="s">'+r[1]+"</span>"+r[2]:r[1]+'<span class="s">'+r[2]+"</span>";return"<tr><td>"+r[0]+'</td><td><div class="w">'+wd+'</div><div class="dim">'+r[3]+"</div></td></tr>"}).join("")+'</tbody></table><p class="soft">Главная ловушка — множественное число. Рядом стоит were, all the, five → добавь -s.</p>'}
+else{body='<div class="sw"><button class="'+(hide?"":"on")+'" data-go="learn:'+w+'">английский виден</button><button class="'+(hide?"on":"")+'" data-go="learnx:'+w+'">спрятать английский</button></div>'+(hide?'<p class="dim">Читай русский, вспомни английский, тапни по шуму.</p>':"")+CARDS[w].map(function(c){var en=hide?'<span class="en" data-hide="'+esc(c[0])+'">'+erode(c[0],1,hash(c[0]))+"</span>":'<span class="en">'+esc(c[0])+"</span>";return'<div class="card">'+en+'<div class="ru">'+c[1]+"</div>"+(c[2]?'<div class="ex">'+c[2]+"</div>":"")+"</div>"}).join("")}
+show(back("sec:"+w,SECTIONS[w].name.toLowerCase())+'<div class="stack" style="gap:18px"><h2>Правила и стишок</h2>'+body+jingle(w)+'<button class="big" data-cmd="drill" data-w="'+w+'"><b>К тренировке</b><span>12 вопросов этого раздела</span></button></div>',"learn")}
+function pick(mode,w){var pool=w?inS(w):ITEMS;
+if(mode==="cold"){var un=mix(pool.filter(function(x){return!seen(x.id)}));return(un.length>=3?un:mix(pool)).slice(0,3).map(function(x){return x.id})}
+if(mode==="drill")return mix(mix(pool).sort(function(a,b){return erosion(b.id)-erosion(a.id)}).slice(0,12)).map(function(x){return x.id});
+if(mode==="clean"){var nz=noisy().sort(function(a,b){return erosion(b.id)-erosion(a.id)}).slice(0,15);var nw=mix(ITEMS.filter(function(x){return!seen(x.id)})).slice(0,nz.length?Math.max(0,Math.min(6,12-nz.length)):12);var ids=nz.concat(nw);if(!ids.length)ids=mix(ITEMS).slice(0,12);return mix(ids).map(function(x){return x.id})}
+if(mode==="final"){var f=[];Object.keys(SECTIONS).forEach(function(k){mix(inS(k)).slice(0,3).forEach(function(x){f.push(x.id)})});mix(ITEMS.filter(function(x){return f.indexOf(x.id)<0})).slice(0,2).forEach(function(x){f.push(x.id)});return mix(f)}}
+var TITLES={cold:"Проба вслепую",drill:"Тренировка",clean:"Повторение",final:"Контрольная"};
+function start(mode,w){stop();var q=pick(mode,w);sess={mode:mode,w:w,q:q,i:0,first:{},clean:0,total:q.length,again:{},before:sig(w),marks:[],cur:null};
+var t=TITLES[mode]+(w&&mode!=="clean"?" · "+SECTIONS[w].name:"");
+show('<div class="sbar">'+back(w?"sec:"+w:"home","выйти")+'<span class="lab" id="left"></span></div><h2 style="margin-bottom:6px">'+t+"</h2>"+(mode==="final"?'<div class="noisebox"><canvas id="nz" width="120" height="40"></canvas><b>ON AIR</b></div><p class="dim" style="font-size:14px">Каждый верный ответ убирает часть шума.</p>':"")+'<div class="log" id="log"></div>',"run");
+if(mode==="final")noise();next()}
+function left(){var el=document.getElementById("left");if(el)el.textContent="осталось "+(sess.q.length-sess.i)}
+function parts(q){return q.split(/(\*\*[^*]+\*\*|___)/).filter(function(s){return s!==""})}
+function next(){if(sess.i>=sess.q.length)return finish();left();var id=sess.q[sess.i],it=byId(id),again=id in sess.first,n=sess.i+1;
+var meta='<div class="meta">'+(n<10?"0":"")+n+" · "+SECTIONS[it.w].name+(it.src?" · из листа":"")+(again?' · <span class="r">повтор</span>':"")+"</div>";
+var q=it.q,ctx=it.ctx||"";if(q.indexOf(" → ")>0){var sp=q.split(" → ");ctx=sp[0];q=sp[1]}
+var ctl="",line="",extra="",gaps=(q.match(/___/g)||[]).length;
+var hdr=it.t==="cut"?'<div class="meta">где на дорожке стоит выделенное действие?</div>':it.say?'<div class="meta">определение → слово</div>':it.t==="build"&&!it.ctx?'<div class="meta">переведи</div>':"";
+var segs=parts(q),gapDone=false;
+line=segs.map(function(s){if(s==="___"){if(gapDone)return'<span class="seg" data-t="___">___</span>';gapDone=true;if(it.t==="type"){var len=Math.max(6,answers(it)[0].length);return'<input class="gapin" id="ans" size="'+len+'" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="ответ">'}if(it.t==="mc"&&gaps===1)return'<button class="dial" id="dial" data-i="-1">выбери<span class="k">тап</span></button>';return'<span class="seg" data-t="___">___</span>'}var b=s.indexOf("**")===0;var t=b?s.slice(2,-2):s;return'<span class="seg'+(b?" bd":"")+'" data-t="'+esc(t)+'">'+esc(t)+"</span>"}).join("");
+if(it.t==="type"&&gaps===0)extra='<input class="gapin wide" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="слово по-английски" aria-label="ответ">';
+if(it.t==="mc"&&gaps!==1)extra='<button class="dial solo" id="dial" data-i="-1">выбери вариант<span class="k">тап</span></button>';
+if(it.t==="build")extra='<div class="noise" id="nzl">'+it.a.split(" ").map(function(wd,k){return'<span data-k="'+k+'">'+erode(wd,1,hash(wd)+k)+"</span>"}).join(" ")+'</div><input class="gapin wide" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="печатай по-английски" aria-label="перевод">';
+if(it.t==="cut")extra='<div class="cuts">'+mix(Object.keys(CUTS)).map(function(k){return'<button class="cut" data-cutk="'+k+'">'+clip(k)+"<span>"+CUTS[k].lab+"</span></button>"}).join("")+"</div>";
+var bank=it.bank?'<div class="dim" style="font-size:13.5px;line-height:1.6">'+BANK[it.bank]+"</div>":"";
+if(it.t!=="cut")ctl='<div class="ctl" id="ctl"><button class="go2" data-cmd="ok"'+(it.t==="mc"?" disabled":"")+'>Ответить ↵</button>'+(it.t==="type"&&sess.mode!=="final"?'<button class="mini" data-cmd="hint">подсказка</button>':"")+(it.t==="mc"?'<span class="dim" style="font-size:13px">тап по зелёному слову — следующий вариант</span>':"")+'</div><div class="hint" id="hint"></div>';
+var el=document.createElement("div");el.className="entry";el.innerHTML=meta+hdr+(ctx?'<div class="ctx">'+esc(ctx)+"</div>":"")+'<div class="line">'+line+"</div>"+extra+bank+ctl+'<div class="res" id="res"></div>';
+var log=document.getElementById("log");var prev=log.querySelector(".entry.live");if(prev){prev.classList.remove("live");["ans","dial","nzl","res","hint","ctl"].forEach(function(x){var o=prev.querySelector("#"+x);if(o)o.removeAttribute("id")})}
+el.classList.add("live");log.appendChild(el);
+sess.cur={id:id,it:it,el:el,pick:-1,opts:it.t==="mc"?mix(it.o):null,hint:0,tries:0,done:false};
+decode(el);
+var inp=el.querySelector("#ans");if(inp){inp.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();submit()}});try{inp.focus({preventScroll:true})}catch(x){}}
+if(sess.i)setTimeout(function(){el.scrollIntoView({behavior:calm()?"auto":"smooth",block:"nearest"})},40)}
+function decode(el){if(calm())return;var segs=[].slice.call(el.querySelectorAll(".line .seg"));if(!segs.length)return;var f=0;var t=setInterval(function(){f++;var e=Math.max(0,1-f/6);segs.forEach(function(s,i){var tx=s.getAttribute("data-t");s.innerHTML=e>0?erode(tx,e,hash(tx)+i+f):esc(tx)});if(f>=6)clearInterval(t)},45)}
+function dial(){var c=sess.cur;if(c.done)return;c.pick=(c.pick+1)%c.opts.length;var d=c.el.querySelector("#dial");d.innerHTML=esc(c.opts[c.pick])+'<span class="k">'+(c.pick+1)+"/"+c.opts.length+"</span>";var b=c.el.querySelector('[data-cmd="ok"]');if(b)b.disabled=false}
+function hint(){var c=sess.cur;if(c.done)return;c.hint++;var a=c.it.h||answers(c.it)[0];c.el.querySelector("#hint").innerHTML=c.hint>=3?esc(a):erode(a,c.hint===1?.75:.4,hash(a)+c.hint)}
+function submit(choice){var c=sess.cur;if(!c||c.done)return;var it=c.it,ok=false,user="";
+if(it.t==="mc"){if(c.pick<0)return;user=c.opts[c.pick];ok=user===it.a}
+if(it.t==="cut"){user=choice;ok=choice===it.a}
+if(it.t==="type"){user=c.el.querySelector("#ans").value;if(!user.trim())return;ok=answers(it).some(function(a){return norm(a)===norm(user)})}
+if(it.t==="build"){user=c.el.querySelector("#ans").value;if(!user.trim())return;ok=answers(it).some(function(a){return norm(a)===norm(user)});c.tries++;
+var tw=it.a.split(" "),uw=user.trim().split(/\s+/);tw.forEach(function(wd,k){var sp=c.el.querySelector('#nzl [data-k="'+k+'"]');if(ok||wnorm(uw[k])===wnorm(wd))sp.innerHTML='<span class="w">'+esc(wd)+"</span>"});
+if(!ok&&c.tries<2){c.el.querySelector("#res").innerHTML='<div class="why">Белые слова стоят верно. Исправь остальное.</div>';return}}
+c.done=true;var clean=ok&&!c.hint&&!(it.t==="build"&&c.tries>1);
+var first=!(c.id in sess.first);if(first){sess.first[c.id]=clean;mark(c.id,clean);sess.marks.push(clean?1:0);if(clean)sess.clean++}else if(clean){S.it[c.id].last=Date.now();save()}
+var retry=sess.mode==="drill"||sess.mode==="clean";if(!clean&&retry){sess.again[c.id]=(sess.again[c.id]||0)+1;if(sess.again[c.id]<=3)sess.q.splice(Math.min(sess.i+4,sess.q.length),0,c.id)}
+paint(c,ok,user,choice);sess.i++;if(sess.mode==="final")noise();next()}
+function paint(c,ok,user,choice){var it=c.it,el=c.el,right=it.t==="cut"?CUTS[it.a].name:(it.t==="mc"?it.a:answers(it)[0]);
+var inp=el.querySelector("#ans"),dl=el.querySelector("#dial");
+if(it.t==="type"&&inp){var sp=document.createElement("span");sp.innerHTML=ok?'<span class="ok">'+esc(user.trim())+"</span>":'<span class="no">'+esc(user.trim())+'</span> <span class="ok">'+esc(right)+"</span>";inp.replaceWith(sp)}
+if(it.t==="mc"&&dl){var s2=document.createElement("span");s2.innerHTML=ok?'<span class="ok">'+esc(user)+"</span>":'<span class="no">'+esc(user)+'</span> <span class="ok">'+esc(right)+"</span>";dl.replaceWith(s2)}
+if(it.t==="build"&&inp){var s3=document.createElement("div");s3.className="line";s3.innerHTML=ok?'<span class="ok">'+esc(user.trim())+"</span>":'<span class="no" style="font-size:.8em">'+esc(user.trim())+'</span><br><span class="ok">'+esc(it.a)+"</span>";inp.replaceWith(s3);var nl=el.querySelector("#nzl");if(nl)nl.remove()}
+if(it.t==="cut")el.querySelectorAll(".cut").forEach(function(b){var k=b.getAttribute("data-cutk");b.disabled=true;if(k===it.a)b.classList.add("right");else if(k===choice&&!ok)b.classList.add("pick");else b.classList.add("off")});
+var ctl=el.querySelector("#ctl");if(ctl)ctl.remove();var hn=el.querySelector("#hint");if(hn)hn.remove();
+var r="";if(it.t==="cut")r+='<div class="tag">'+CUTS[it.a].name+" · "+CUTS[it.a].form+"</div>";
+if(it.ru)r+='<div class="tr">'+esc(it.ru)+"</div>";if(!ok||it.t==="cut")r+='<div class="why">'+esc(it.x)+"</div>";
+r+='<div><button class="mini" data-say="'+esc(spoken(it))+'">послушать</button></div>';el.querySelector("#res").innerHTML=r}
+function noise(){var c=document.getElementById("nz");if(!c)return;var x=c.getContext("2d"),lv=1-sess.clean/sess.total;if(nzT)clearInterval(nzT);
+function draw(){var im=x.createImageData(120,40);for(var i=0;i<im.data.length;i+=4){var on=Math.random()<lv,g=Math.random(),ne=on&&g>.985;im.data[i]=on?(ne?55:255*g):0;im.data[i+1]=on?(ne?255:255*g):0;im.data[i+2]=on?(ne?8:255*g):0;im.data[i+3]=255}x.putImageData(im,0,0)}
+draw();if(!calm())nzT=setInterval(function(){if(!document.getElementById("nz")){clearInterval(nzT);return}draw()},90)}
+function finish(){if(nzT){clearInterval(nzT);nzT=null}var log=document.getElementById("log"),el=document.createElement("div");el.className="sum";var lf=document.getElementById("left");if(lf)lf.textContent="готово";
+if(sess.mode==="final"){var p=Math.round(sess.clean/sess.total*100);S.best=Math.max(S.best||0,p);save();
+el.innerHTML='<div class="lab">итог</div><div class="pct">'+p+'<small>%</small></div><p>Верно с первого раза '+sess.clean+" из "+sess.total+". На тесте это примерно "+Math.round(p/10)+" из 10 за задание. Лучший результат: "+S.best+'%.</p><div class="lab">карта ответов</div><div class="map">'+sess.marks.map(function(m){return'<i class="'+(m?"":"n")+'"></i>'}).join("")+'</div><p class="dim">Полосатые — ошибки. Они уже ждут в повторении.</p><div class="row"><button class="btn go" data-cmd="clean">Повторить ошибки</button><button class="btn" data-cmd="final">Ещё раз</button><button class="btn thin" data-go="home">На главную</button></div>'}
+else{var a=sig(sess.w);el.innerHTML='<div class="lab">готово</div><h2>'+sess.clean+" из "+sess.total+'</h2><p class="soft">верно с первого раза · '+(sess.w?SECTIONS[sess.w].name.toLowerCase():"всё вместе")+": "+sess.before+"% → "+a+'%</p><div class="row">'+(sess.mode==="cold"?'<button class="btn go" data-go="learn:'+sess.w+'">К правилам</button>':'<button class="btn go" data-cmd="'+sess.mode+'" data-w="'+(sess.w||"")+'">Ещё 12</button>')+'<button class="btn thin" data-go="home">На главную</button></div>'}
+log.appendChild(el);setTimeout(function(){el.scrollIntoView({behavior:calm()?"auto":"smooth",block:"start"})},40)}
+function talks(){stop();show(back("home","главная")+'<div class="stack" style="gap:12px"><h2>Говорение на время</h2><p class="soft">Выбери тему. Рассказываешь вслух одно и то же три раза: 60, 45 и 30 секунд. С каждым разом короче — фразы начинают выходить сами.</p>'+TALKS.map(function(m,i){return'<button class="sec" style="grid-template-columns:1fr" data-go="talk:'+i+'"><div><b style="text-transform:none;font-size:16px">'+esc(m.en)+"</b><span>"+esc(m.ru)+"</span></div></button>"}).join("")+"</div>","talk")}
+function talkOpen(i){stop();talk={i:i,r:0,used:{},t:0,tm:null};drawTalk()}
+function drawTalk(){var m=TALKS[talk.i],sx=[60,45,30],done=talk.r>=3;
+var rd=sx.map(function(s,k){return'<span class="'+(k<talk.r?"done":k===talk.r?"on":"")+'">'+s+" сек</span>"}).join("");
+show(back("talk","темы")+'<div class="stack" style="gap:18px"><div class="line">'+esc(m.en)+'</div><p class="dim">'+esc(m.ru)+'</p><div class="lab">постарайся вставить · тапни, если сказала</div><div class="chips">'+m.ch.map(function(c,k){return'<button class="chip'+(talk.used[k]?" on":"")+'" data-chip="'+k+'">'+esc(c)+"</button>"}).join("")+'</div><div class="rounds">'+rd+"</div>"+(done?'<h2 class="neon">Три раза есть</h2><p>Вставила '+Object.keys(talk.used).length+" из "+m.ch.length+'. Завтра расскажи то же самое один раз за 30 секунд.</p><div class="row"><button class="btn go" data-go="talk">Другая тема</button><button class="btn thin" data-go="home">На главную</button></div>':'<div class="timer" id="tm">'+(talk.t||sx[talk.r])+'</div><div class="row"><button class="btn go" data-cmd="tgo">'+(talk.tm?"Готово":"Старт · рассказ "+(talk.r+1))+'</button><button class="btn thin" data-cmd="tsay">Послушать тему</button></div>')+"</div>","talk1")}
+function tgo(){var sx=[60,45,30];function end(){clearInterval(talk.tm);talk.tm=null;talk.r++;talk.t=0;S.talks=(S.talks||0)+1;save();drawTalk()}
+if(talk.tm){end();return}talk.t=sx[talk.r];talk.tm=setInterval(function(){talk.t--;var e=document.getElementById("tm");if(e)e.textContent=talk.t;if(talk.t<=0)end()},1000);drawTalk()}
+function code(){var rows=[];Object.keys(S.it).forEach(function(id){var s=S.it[id];if(s.seen)rows.push(id+"."+s.b+"."+Math.round(s.last/36e5).toString(36))});var jg=Object.keys(S.jg).map(function(k){return k+S.jg[k]}).join("");var raw="UV1|"+rows.join("~")+"|"+jg+"|"+(S.best||0)+"|"+(S.talks||0);try{return btoa(raw)}catch(e){return raw}}
+function uncode(str){var raw=String(str||"").trim();try{raw=atob(raw.replace(/\s+/g,""))}catch(e){}var p=raw.split("|");if(p[0]!=="UV1")return false;var n=0;
+(p[1]||"").split("~").forEach(function(r){var f=r.split(".");if(f.length!==3||!byId(f[0]))return;var last=parseInt(f[2],36)*36e5,cur=S.it[f[0]];if(!cur||!cur.seen||cur.last<last){S.it[f[0]]={b:Math.min(5,+f[1]||0),last:last,seen:1};n++}});
+(p[2]||"").replace(/([a-z])(\d)/g,function(m,k,v){S.jg[k]=Math.max(S.jg[k]||0,+v)});S.best=Math.max(S.best||0,+p[3]||0);S.talks=Math.max(S.talks||0,+p[4]||0);save();return n+1}
+function saveView(msg){stop();var app2=window.navigator.standalone||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);var n=ITEMS.filter(function(x){return seen(x.id)}).length;
+show(back("home","главная")+'<div class="stack" style="gap:16px"><h2>Сохранение</h2>'+(msg?'<div class="warn">'+esc(msg)+"</div>":"")+'<p class="soft">Прогресс сохраняется сам после каждого ответа, сразу в два хранилища браузера. Сейчас в нём '+n+' фраз.</p><div class="list"><div><b>1. Добавь на экран «Домой»</b><span>'+(app2?"Уже сделано — ты сейчас в режиме приложения.":"Safari → кнопка «Поделиться» → «На экран Домой». Так сайт работает как приложение, и Safari не стирает его данные, пока ты им пользуешься.")+'</span></div><div><b>2. Код сохранения</b><span>Скопируй и положи в заметки. Вставишь на любом устройстве — прогресс вернётся.</span></div></div><textarea class="code" id="mycode" readonly>'+code()+'</textarea><div class="row"><button class="btn go" data-cmd="copy">Скопировать код</button><button class="btn" data-cmd="dl">Скачать файлом</button></div><div class="lab" style="margin-top:10px">вернуть прогресс</div><textarea class="code" id="incode" placeholder="вставь код сюда"></textarea><div class="row"><button class="btn" data-cmd="restore">Вернуть из кода</button><label class="btn thin" for="file">Открыть файл</label><input type="file" id="file" accept=".txt,text/plain" hidden></div><p class="dim" style="font-size:13.5px">При возврате ничего не теряется: из двух версий каждой фразы остаётся более свежая.</p></div>',"save");
+var f=document.getElementById("file");if(f)f.addEventListener("change",function(){var fl=f.files&&f.files[0];if(!fl)return;var rd=new FileReader();rd.onload=function(){var r=uncode(rd.result);saveView(r?"Прогресс возвращён.":"Файл не подошёл.")};rd.readAsText(fl)})}
+function about(){stop();var t="keep track of";show(back("home","главная")+'<div class="stack" style="gap:14px"><h2>Как это устроено</h2><div class="list"><div><b>Как фраза рассыпается</b><span class="noise">'+esc(t)+" → "+erode(t,.35,hash(t))+" → "+erode(t,.7,hash(t))+'</span><em>После верного ответа фраза снова чистая.</em></div>'+MODES.map(function(m){return"<div><b>"+m[0]+"</b><span>"+m[1]+"</span><em>"+m[2]+"</em></div>"}).join("")+'</div><div class="lab" style="margin-top:12px">думать по-английски</div><p class="soft">Внутренняя речь на втором языке растёт вместе с практикой вслух. Три привычки на день: проговаривай свои действия в Present Continuous («I\'m opening my laptop»); вечером перескажи день пятью фразами в прошедших временах; вместо «блин, забыла» — «I\'ve forgotten».</p><div class="lab" style="margin-top:12px">исследования</div><ol class="src">'+SRC.map(function(s){return'<li><a href="'+s[1]+'" target="_blank" rel="noopener">'+esc(s[0])+"</a></li>"}).join("")+"</ol></div>","about")}
+function route(r){var p=r.split(":");if(p[0]==="home")home();else if(p[0]==="sec")section(p[1]);else if(p[0]==="learn")learn(p[1]);else if(p[0]==="learnx")learn(p[1],true);else if(p[0]==="talk"){if(p[1]!=null)talkOpen(+p[1]);else talks()}else if(p[0]==="save")saveView();else if(p[0]==="about")about()}
+app.addEventListener("click",function(e){var b=e.target.closest("button,.kw,[data-hide],label");if(!b)return;
+if(b.hasAttribute("data-hide")){b.textContent=b.getAttribute("data-hide");b.removeAttribute("data-hide");return}
+if(b.classList.contains("kw")){if(b.classList.toggle("open"))b.textContent=b.getAttribute("data-kw");else b.innerHTML=erode(b.getAttribute("data-kw"),+b.getAttribute("data-e"),+b.getAttribute("data-s"));return}
+var g=b.getAttribute("data-go");if(g){route(g);return}
+if(b.hasAttribute("data-say")){say(b.getAttribute("data-say"));return}
+if(b.id==="dial"){dial();return}
+if(b.hasAttribute("data-cutk")){submit(b.getAttribute("data-cutk"));return}
+if(b.hasAttribute("data-chip")){var k=b.getAttribute("data-chip");if(talk.used[k])delete talk.used[k];else talk.used[k]=1;b.classList.toggle("on");return}
+var c=b.getAttribute("data-cmd"),w=b.getAttribute("data-w")||null;
+if(c==="clean")start("clean");else if(c==="final")start("final");else if(c==="cold")start("cold",w);else if(c==="drill")start(w?"drill":"clean",w);
+else if(c==="ok")submit();else if(c==="hint")hint();
+else if(c==="jsay")say(JINGLES[w].join(" ").replace(/[\[\]]/g,""));
+else if(c==="jup"){S.jg[w]=Math.min(3,(S.jg[w]||0)+1);save();learn(w);setTimeout(function(){var j=document.querySelector(".jing");if(j)j.scrollIntoView({block:"start"})},30)}
+else if(c==="jreset"){S.jg[w]=0;save();learn(w)}
+else if(c==="tgo")tgo();else if(c==="tsay")say(TALKS[talk.i].en);
+else if(c==="copy"){var ta=document.getElementById("mycode");var done=function(){S.bk=Date.now();save();b.textContent="Скопировано"};try{navigator.clipboard.writeText(ta.value).then(done,function(){ta.select();done()})}catch(x){ta.select();done()}}
+else if(c==="dl"){try{var bl=new Blob([code()],{type:"text/plain"}),a=document.createElement("a");a.href=URL.createObjectURL(bl);a.download="pomekhi-u1voc-"+new Date().toISOString().slice(0,10)+".txt";document.body.appendChild(a);a.click();a.remove();S.bk=Date.now();save()}catch(x){}}
+else if(c==="restore"){var r=uncode(document.getElementById("incode").value);saveView(r?"Прогресс возвращён.":"Код не подошёл. Проверь, что скопирован целиком.")}});
+boot();
+</script>
+</body>
+</html>
